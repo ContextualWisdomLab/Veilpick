@@ -25,10 +25,11 @@ Files: `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `src/lib.rs`, `tests/f
 
 - [x] Specify 12 behavioral regressions in `tests/frontier_contract.rs`, including bounded identity storage, stable ordering, and non-success exhaustion.
 - [ ] Execute `cargo test --locked --all-targets` on the test-only head and confirm unresolved frontier API is the actual RED, not an unrelated toolchain or workflow failure.
-- [ ] Implement `Candidate`, `FrontierLimits`, `FrontierError`, `FrontierStep`, and `CrawlFrontier` in `src/frontier.rs`; export them from `src/lib.rs` with complete rustdoc.
-- [ ] Pass the focused tests and add hostile-boundary/error-display tests for the implemented API.
-- [ ] Run `cargo fmt --all --check`, `cargo test --locked --all-targets`, `cargo clippy --locked --all-targets -- -D warnings`, and `RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps` on one unchanged head.
-- [ ] Update implementation status and CHANGELOG; retain Draft until executed verification and applicable repository review gates complete.
+- [x] Add `Candidate`, `FrontierLimits`, `FrontierError`, `FrontierStep`, and `CrawlFrontier` implementation source in `src/frontier.rs`; export them from `src/lib.rs` with rustdoc. Compilation remains unverified.
+- [x] Add 13 boundary/error-display requirements in `tests/frontier_boundaries.rs` and the synthetic `examples/frontier.rs` consumer.
+- [ ] Pass both focused test files on the implementation revision.
+- [ ] Run `cargo fmt --all --check`, `cargo test --locked --all-targets`, `cargo clippy --locked --all-targets -- -D warnings`, and `RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps` successfully on one unchanged head.
+- [x] Update implementation-source status and CHANGELOG; keep Draft because executed verification is unavailable.
 
 Expected positive behavior:
 
@@ -44,8 +45,30 @@ match queue.next_candidate() {
 }
 ```
 
+## Implementation-source refinements
+
+Use `BTreeMap<(Reverse<usize>, usize), Candidate>` for pending priority/FIFO
+ordering and a `BTreeSet<String>` lifetime identity ledger. Derive each order key
+from the never-decreasing ledger size before admission, not the pending length.
+Validate unknown hints before duplicate/capacity shortcuts. Retain original concept
+order while deduplicating hints, and expose no frontier reset/clone operation.
+Counters describe dispatches for this instance, not global task/network retries.
+
 ## Verification environment and truth boundary
 
-The authoring container has no `cargo` or `rustc`; locating them in the available tool paths failed, and the official Rust download host could not be resolved from that container. This is an environment limitation, not a product-test RED. Repository CI is the execution path. A queued or absent CI run is not a passing test or an observed RED.
+The original test-only head is `26d94719943892b619349a4a0e0835c4cf5a46d4`.
+Five local baseline copies were matched to its Git blob hashes before editing.
+The authoring environment still has no `cargo` or `rustc`; attempts to retrieve
+a toolchain did not succeed. Both the baseline and expanded test-first invocations
+exited 127, before Rust execution. These are environment failures, not product RED.
+The original push run `33948681099` / job `101259264294` was still queued when
+rechecked during implementation.
 
-The first commit is intentionally test-only and has no frontier implementation. Do not promote this draft as a working Rust library, network client, stealth implementation, ontology engine, or challenge solver.
+The follow-up request advances implementation source rather than stopping at
+interface-only scaffolding. The original 12 test requirements are retained and
+the additional 13 tests were written before the production module. However,
+RED/GREEN was not executed: do not call this a verified TDD cycle or passing library.
+See [the verification record](../../verification/semantic-frontier.md).
+
+No transport, browser-applied stealth, ontology induction, live model integration,
+extraction, challenge solver, release, or merge is claimed by this increment.

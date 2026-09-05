@@ -1,5 +1,13 @@
 //! Veilpick's semantic acquisition core.
 //!
-//! The first test-first slice specifies a bounded, deterministic crawl frontier.
-//! This crate does not yet implement that contract, network access, stealth,
-//! ontology induction, extraction, or automatic challenge resolution.
+//! The bounded crawl frontier selects opaque acquisition references using
+//! explicit task-concept hints, lifetime deduplication, and dispatch budgets.
+//! Selection is not acquisition authority, extraction evidence, or success.
+//!
+//! Network access, applied stealth, ontology induction, extraction, and automatic
+//! challenge resolution are separate required product capabilities, not supplied
+//! by this first planning primitive.
+
+mod frontier;
+
+pub use frontier::{Candidate, CrawlFrontier, FrontierError, FrontierLimits, FrontierStep};

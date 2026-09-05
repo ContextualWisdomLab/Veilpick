@@ -4,7 +4,7 @@
 
 **Ontology. Autonomy. Stealth.** All three are first-class product dimensions.
 
-> Product concept and accepted architectural direction, not a shipped-capability claim. This documentation baseline does not implement the Rust engine, browser-applied stealth, automated challenge resolution, or end-to-end acceptance evidence.
+> Product concept and accepted architectural direction, not a shipped-capability claim. This branch adds the first bounded Rust crawl-frontier implementation. The complete autonomous engine, browser-applied stealth, automated challenge resolution, and end-to-end acceptance evidence are not delivered by that planning primitive.
 
 ## Product contract
 
@@ -21,6 +21,36 @@ Veilpick owns the Rust task loop, crawl frontier, task-local ontology use, seman
 OriginWeave is the intended reusable owner of governed transport, browser, presentation/fingerprint application, policy, and runtime evidence. ConceptWeave supplies semantic candidate/domain contracts, contextual-orchestrator supplies replaceable reasoning, and context-graph-contracts supplies interoperable assertions. These integrations require actual eligible upstream implementations and consumer tests; they are not claimed as working by this document.
 
 Task-local inferred semantics do not bypass ConceptWeave's review/publication lifecycle. Optional catalogs, document processors, ranking services, and enterprise identity systems stay behind adapters rather than becoming mandatory standalone dependencies. See ADR 0003 for the detailed ownership and availability matrix.
+
+## Current Rust slice
+
+The standard-library-only frontier implementation is in [`src/frontier.rs`](src/frontier.rs),
+exported through `Candidate`, `CrawlFrontier`, `FrontierLimits`, `FrontierError`, and
+`FrontierStep`. It orders targets by distinct declared concept hints, retains FIFO
+order for ties, preserves lifetime duplicate identities, and enforces finite
+admission and dispatch budgets. Targets are opaque references supplied by a caller;
+this primitive neither discovers URLs nor grants authority to access them.
+
+Identifiers are bounded to 256 UTF-8 bytes, raw concept input to 128 entries, and
+each frontier limit to 1..=4096. Invalid input cannot mutate the frontier. Debug
+output contains counts rather than target/concept values. `Drained` and
+`BudgetExhausted` are planning outcomes, never successful-extraction receipts.
+
+With the pinned Rust 1.98.1 toolchain installed:
+
+```bash
+cargo run --locked --example frontier
+cargo test --locked --all-targets
+cargo fmt --all --check
+cargo clippy --locked --all-targets -- -D warnings
+RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
+```
+
+The [example](examples/frontier.rs) is synthetic local planning, not a website
+scrape. The repository now specifies 25 behavioral tests, including 81 small
+priority combinations and the 4096-target boundary. Compiler/test/formatter/lint
+execution remains unverified in the authoring environment; source inspection is
+not a substitute. See the [verification record](docs/verification/semantic-frontier.md).
 
 ## Architecture decisions
 
