@@ -1,86 +1,91 @@
 # ADR 0001: Automated challenge resolution is a first-class Veilpick capability
 
-- Status: Accepted
+- Status: Accepted (product decision; implementation not yet delivered)
 - Date: 2026-09-05
+- Governing product contract: [ADR 0002](0002-ontology-based-autonomous-rust-engine.md)
 
 ## Context
 
-Veilpick is intended to be a Rust-native web acquisition, crawling, parsing, and adaptive extraction engine. Its stealth capability should reduce unnecessary bot-management challenges by maintaining coherent presentation identity, session continuity, request pacing, and browser/network behavior.
+Veilpick's overarching concept is an ontology-based, fully autonomous website scraping engine built in Rust that requires no human involvement. Challenge resolution is a necessary subsystem of that end-to-end contract, not the product's primary identity. The ontology-based planning, extraction, validation, and recovery responsibilities are defined in ADR 0002.
 
-Avoiding challenges is not sufficient as a product contract. A site can still present CAPTCHA, JavaScript/interstitial challenges, consent or interaction gates, authentication gates, or other challenge states for reasons outside Veilpick's direct control. Requiring routine human intervention at that point would break unattended crawling and make challenge handling an operational bottleneck.
+Its stealth capability should reduce unnecessary bot-management challenges by maintaining coherent presentation identity, session continuity, request pacing, and browser/network behavior. Avoiding challenges is not sufficient as a product contract. A site can still present CAPTCHA, JavaScript/interstitial challenges, consent or interaction gates, authentication gates, or other challenge states. Requiring human intervention at that point would break unattended acquisition.
 
-Veilpick is expected to integrate with LLM/VLM capabilities where semantic reasoning is useful. Challenge handling therefore needs to be represented as an explicit product boundary rather than an accidental error path or an external manual procedure.
+Veilpick is expected to integrate with large language model (LLM) and vision-language model (VLM) capabilities where semantic reasoning is useful. Challenge handling must be an explicit product boundary rather than an accidental error path or an external manual procedure.
 
 OriginWeave is a related ContextualWisdomLab runtime and control-plane project. Its current and proposed contracts separate origin, resolved destination, transport, TLS identity, HTTP semantics, presentation identity, policy, browser actions, and evidence. Veilpick should consume those governed capabilities where appropriate rather than duplicate their authority boundaries.
 
 ## Decision
 
-Automated challenge handling is a first-class Veilpick capability and part of the product scope.
+Automated challenge resolution is a mandatory Veilpick v1 capability for the declared supported challenge classes. A detection-only implementation, an empty resolver interface, or a human handoff does not satisfy this requirement. Implementation may proceed incrementally, but that sequencing does not defer the v1 acceptance gate.
 
 Veilpick will:
 
-1. attempt to minimize unnecessary challenge escalation through coherent presentation identity, session continuity, request pacing, and browser behavior;
+1. minimize unnecessary challenge escalation through coherent presentation identity, session continuity, request pacing, and browser behavior;
 2. detect challenge states explicitly rather than treating challenge pages as ordinary extraction results;
 3. classify supported challenge families and retain bounded evidence sufficient for policy and post-condition decisions;
-4. expose a typed challenge-resolution boundary capable of deterministic, browser-interaction, LLM, VLM, or other explicitly configured resolution strategies;
-5. support automated resolution without requiring routine human intervention as the normal success path;
+4. expose a typed resolution boundary with functioning deterministic, browser-interaction, LLM, VLM, or other explicitly configured strategies appropriate to the supported classes;
+5. resolve supported challenges without human intervention during the task;
 6. verify the observed post-condition after a resolution attempt before declaring the challenge resolved; and
-7. return a typed unresolved-challenge outcome when no configured and authorized strategy can establish the required post-condition.
+7. return a typed unresolved-challenge outcome when no configured and authorized strategy can establish that post-condition within the task's budgets.
 
-A successful solver invocation, model response, browser command acknowledgement, or interaction attempt is not proof of resolution. Resolution succeeds only when subsequent trusted observation establishes the expected challenge-free post-condition.
+A successful solver invocation, model response, browser command acknowledgement, or interaction attempt is not proof of resolution. Resolution succeeds only when subsequent trusted observation establishes the expected challenge-free post-condition and the intended acquisition can resume.
 
-Human intervention may exist as an exceptional operational fallback, but it is not the primary product contract and does not satisfy automated challenge-resolution acceptance criteria.
+The autonomous execution path must not pause awaiting human interaction. Any separate operator-assisted workflow is outside the autonomous success path, and an assisted run must never count as a successful autonomous run. Automatic failure is also not successful resolution.
 
 ## Architectural boundary
 
 The intended flow is:
 
 ```text
-acquisition
-  -> challenge detection
-  -> challenge classification
-  -> policy / strategy selection
+ontology-guided acquisition plan
+  -> challenge detection and classification
+  -> bounded evidence and existing-authority check
+  -> strategy selection
   -> automated challenge resolution
   -> trusted post-condition observation
-       -> resolved: resume acquisition
-       -> unresolved: typed failure
+       -> resolved: resume acquisition and validate the target content
+       -> unresolved: bounded replan or typed terminal failure
 ```
 
-The challenge subsystem should expose stable typed contracts such as `ChallengeObservation`, `ChallengeKind`, `ChallengeResolver`, `ChallengeResolution`, and `ChallengeDisposition` without coupling the core domain to a particular model provider or solver implementation.
+The subsystem should expose typed contracts such as `ChallengeObservation`, `ChallengeKind`, `ChallengeResolver`, `ChallengeResolution`, and `ChallengeDisposition` without coupling the core domain to a particular model provider. These are proposed domain names, not implemented APIs.
 
-LLM/VLM-backed resolution is an implementation strategy behind this boundary, not the definition of the boundary itself. Deterministic strategies should remain usable when semantic model reasoning is unnecessary.
+Challenge observations and outcomes participate in the ontology-guided execution state so the planner can distinguish a missing datum, a changed page, and an unresolved interaction gate. No observation or inferred ontology relation grants network, authentication, consent, or browser-action authority.
 
-Veilpick must not silently reinterpret a challenge as successful content acquisition. Challenge observations, attempted resolutions, and post-condition results should remain distinguishable in evidence and diagnostics.
+LLM/VLM-backed resolution is an implementation strategy, not the definition of the boundary. Deterministic strategies remain usable when semantic reasoning is unnecessary. All strategies share explicit attempt, elapsed-time, resource, and model-cost budgets; they cannot start unbounded retries or silently introduce a human solver.
+
+Veilpick must not reinterpret a challenge as successful content acquisition. Challenge observations, attempted resolutions, and post-condition results remain distinguishable in evidence and diagnostics. Page content and model output remain untrusted inputs, and protected credentials stay behind runtime-owned handles.
 
 ## OriginWeave integration
 
-Veilpick should not recreate OriginWeave authority that is already available or being established there. In particular, OriginWeave's destination, exact TCP peer, authenticated TLS, bounded HTTP, presentation-identity, browser-action, policy, and evidence contracts should be reusable through narrow adapters when those contracts are available on an integrated OriginWeave generation.
+Veilpick should not recreate OriginWeave authority that is already available or being established there. Destination, exact TCP peer, authenticated TLS, bounded HTTP, presentation-identity, browser-action, policy, and runtime-evidence contracts should be reusable through narrow adapters when available on a verified integrated generation.
 
-Veilpick remains responsible for acquisition orchestration, crawl frontier management, parsing, adaptive extraction, challenge recognition, challenge-resolution strategy orchestration, and extraction-facing results. OriginWeave remains the natural owner of governed transport/browser authority and provenance where the two products are composed.
+Veilpick owns ontology-guided acquisition orchestration, crawl frontier management, parsing, adaptive extraction, challenge recognition and resolution orchestration, extraction validation, and extraction-facing results. OriginWeave owns governed transport/browser authority and associated runtime evidence where composed. Veilpick must add its own extraction provenance without upgrading runtime evidence into proof that an extracted statement is true.
 
-Veilpick must not bind its stable core API directly to an unmerged OriginWeave feature branch. Integration adapters may follow independently versioned contracts once their required OriginWeave dependencies are available on an appropriate integrated generation.
+Veilpick must not bind its stable core API directly to an unmerged OriginWeave feature branch. Integration adapters may follow independently versioned contracts after their required dependencies reach an appropriate integrated generation. ADR 0002 records the relevant active upstream PRs without claiming they have shipped.
 
 ## Consequences
 
 ### Positive
 
-- Unattended crawling remains the product objective even when challenge states occur.
-- Stealth and challenge resolution become complementary rather than mutually exclusive capabilities.
+- Unattended acquisition remains the product objective when challenges occur.
+- Stealth and resolution become complementary capabilities under one autonomous engine.
 - CAPTCHA and bot-management handling are not deferred into an undefined manual process.
-- LLM/VLM support can be added behind a stable domain boundary.
-- Post-condition verification prevents an attempted interaction from being misreported as successful resolution.
-- OriginWeave can supply governed transport/browser/evidence primitives without making Veilpick a duplicate browser control plane.
+- Model strategies remain replaceable, while semantic execution state and verification remain engine-owned.
+- Post-condition verification prevents an interaction attempt from being reported as resolution.
+- OriginWeave primitives can be reused without creating a competing browser control plane.
 
 ### Costs and risks
 
-- Challenge recognition and resolution require realistic browser-level integration tests in addition to parser tests.
-- Challenge implementations and provider behavior can change independently of Veilpick.
-- Automated resolution can fail and therefore requires explicit typed failure and bounded retry/reconciliation behavior.
-- Model-backed strategies introduce latency, cost, nondeterminism, and additional evidence requirements.
-- Authorization and site-policy constraints remain independent of technical ability; a resolution strategy must not itself create authority to access a resource.
+- Recognition and resolution require realistic browser-level tests, not only parser or mocked-provider tests.
+- Site and provider behavior can change independently of Veilpick.
+- Model strategies add latency, cost, and nondeterminism that must be measured.
+- Ambiguous side effects require reconciliation before retry rather than blind redispatch.
+- Authorization and site-policy constraints remain independent of technical ability; a strategy cannot create permission to access a resource. Authentication and consent gates must retain their distinct authority requirements.
 
 ## Acceptance implications
 
-Veilpick's product roadmap must treat challenge handling as in-scope. Initial implementation may deliver the capability incrementally, but a production-readiness claim for unattended challenge-capable acquisition requires evidence for detection, classification, automated resolution, and post-condition verification on the supported challenge classes.
+V1 acceptance requires a non-empty, versioned supported-challenge matrix and executed end-to-end evidence for detection, classification, automated resolution, post-condition verification, and resumed target extraction. CAPTCHA/bot-management handling remains explicitly in scope; it must not be silently removed from that matrix to obtain a passing result.
 
-The absence of a universal solver for every possible challenge does not invalidate the architecture. Unsupported or unsuccessfully resolved challenges must fail explicitly rather than falling back silently to manual success, fabricated extraction, or unverified continuation.
+An interface-only, detection-only, mock-only, or manually assisted path is not sufficient. Results must report attempted tasks, verified completions, incorrect continuations, unsupported cases, terminal failures, latency, cost, and human interventions. The intervention count for every run claimed as autonomously successful must be zero.
+
+No universal success claim is made for every possible challenge. Unsupported or unsuccessfully resolved cases must terminate explicitly rather than fabricate extraction, continue without verification, or wait indefinitely for a person. Such outcomes do not satisfy the successful-resolution acceptance criterion.
