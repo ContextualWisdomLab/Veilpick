@@ -1,5 +1,7 @@
 # Veilpick
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ContextualWisdomLab/Veilpick)
+
 **Ontology-guided, autonomous web acquisition—designed to turn an authorized collection goal into source-backed structured data.**
 
 Veilpick is a planned Rust engine for resilient web acquisition. It is intended to discover relevant pages, understand their semantics, adapt extraction as sites change, reconcile entities, and validate what it collected without requiring a person to author and maintain a scraper for every site.
