@@ -92,6 +92,7 @@ ADR decision status records product-owner acceptance; repository integration rem
 
 - [Bounded documentation index](docs/index.md)
 - [ADR index](docs/adr/README.md)
+- [Product and technical gap baseline](docs/product-technical-gap-baseline.md)
 - [ADR 0001: Automated challenge resolution](docs/adr/0001-automated-challenge-resolution.md)
 - [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](docs/adr/0002-ontology-based-autonomous-rust-engine.md)
 - [ADR 0003: First-class stealth and ecosystem composition](docs/adr/0003-stealth-and-ecosystem-composition.md)
