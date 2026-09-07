@@ -1,0 +1,20 @@
+[package]
+name = "veilpick"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98.1"
+license = "Apache-2.0"
+description = "Bounded semantic acquisition planning for Veilpick"
+repository = "https://github.com/ContextualWisdomLab/Veilpick"
+publish = false
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
