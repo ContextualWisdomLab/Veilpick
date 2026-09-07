@@ -1,42 +1,46 @@
 # Veilpick
 
-**An ontology-based, fully autonomous website scraping engine built in Rust that requires no human involvement.**
+**Ontology-guided, autonomous web acquisition—designed to turn an authorized collection goal into source-backed structured data.**
+
+Veilpick is a planned Rust engine for resilient web acquisition. It is intended to discover relevant pages, understand their semantics, adapt extraction as sites change, reconcile entities, and validate what it collected without requiring a person to author and maintain a scraper for every site.
 
 **Ontology. Autonomy. Stealth.** All three are first-class product dimensions.
 
-> Product concept and accepted architectural direction, not a shipped-capability claim. This branch adds the first bounded Rust crawl-frontier implementation. The complete autonomous engine, browser-applied stealth, automated challenge resolution, and end-to-end acceptance evidence are not delivered by that planning primitive.
+> **Status: pre-release implementation foundation.** This branch adds one bounded Rust crawl-frontier planning primitive. It does not yet ship the autonomous engine, browser integration, stealth runtime, challenge resolver, package, hosted service, or end-to-end acceptance evidence.
 
-## Product contract
+## Why Veilpick
 
-Given a collection goal and preconfigured operating authority, Veilpick is intended to discover relevant pages, construct or select a working ontology, plan acquisition, apply coherent stealth and session behavior, interpret page semantics, extract and reconcile entities, resolve supported challenges, recover from website changes, validate results, and deliver source-backed structured data without human intervention during execution.
+Conventional scrapers bind a collection workflow to selectors and page structure. When a site changes, the operator has to repair the implementation before collection can continue. Veilpick’s product direction is to keep the collection goal and evidence contract stable while the engine adapts discovery and extraction behind that boundary.
 
-Users must not have to hand-author a site-specific scraper, select DOM nodes, repair selectors, build a per-site ontology, solve a challenge, or approve each runtime action for a supported task to complete. A user-supplied ontology is an optional input, not a prerequisite for autonomy.
+A completed supported task is intended to provide:
 
-Ontology guides the complete semantic acquisition loop; stealth remains an explicit acquisition requirement. Neither ontology nor a solver replaces stealth, and successful stealth does not prove extraction correctness. Automated resolution remains mandatory for v1's declared supported challenge classes.
+- structured records tied to their source evidence;
+- explicit validation results instead of silent extraction success;
+- task-local semantic adaptation without making unpublished ontology truth authoritative;
+- recovery from supported page and presentation changes;
+- an auditable boundary between collection intent, runtime actions, and delivered data.
 
-## Responsibility boundaries
+Veilpick is for authorized acquisition. Operating authority, target policy, data rights, and required human approvals must be established before a task starts; autonomy does not expand permission.
 
-Veilpick owns the Rust task loop, crawl frontier, task-local ontology use, semantic planning, acquisition/stealth orchestration, adaptive extraction, entity reconciliation, challenge orchestration, validation, and extraction provenance.
+## Intended experience
 
-OriginWeave is the intended reusable owner of governed transport, browser, presentation/fingerprint application, policy, and runtime evidence. ConceptWeave supplies semantic candidate/domain contracts, contextual-orchestrator supplies replaceable reasoning, and context-graph-contracts supplies interoperable assertions. These integrations require actual eligible upstream implementations and consumer tests; they are not claimed as working by this document.
+Given a collection goal and preconfigured operating authority, Veilpick is intended to:
 
-Task-local inferred semantics do not bypass ConceptWeave's review/publication lifecycle. Optional catalogs, document processors, ranking services, and enterprise identity systems stay behind adapters rather than becoming mandatory standalone dependencies. See ADR 0003 for the detailed ownership and availability matrix.
+1. discover relevant pages and maintain a crawl frontier;
+2. construct or select task-local semantic guidance;
+3. plan governed acquisition and session behavior;
+4. interpret page semantics and extract candidate entities;
+5. reconcile entities while retaining source provenance;
+6. handle declared supported challenge classes;
+7. verify post-conditions and deliver structured results.
 
-## Current Rust slice
+For a declared supported task, users should not need to hand-author a site-specific scraper, select DOM nodes, repair selectors, build a per-site ontology, solve each supported challenge, or approve every runtime action. A user-supplied ontology is an optional input, not a prerequisite for autonomy.
 
-The standard-library-only frontier implementation is in [`src/frontier.rs`](src/frontier.rs),
-exported through `Candidate`, `CrawlFrontier`, `FrontierLimits`, `FrontierError`, and
-`FrontierStep`. It orders targets by distinct declared concept hints, retains FIFO
-order for ties, preserves lifetime duplicate identities, and enforces finite
-admission and dispatch budgets. Targets are opaque references supplied by a caller;
-this primitive neither discovers URLs nor grants authority to access them.
+Ontology guides the semantic acquisition loop; stealth remains a separate acquisition requirement. Neither ontology nor a solver replaces stealth, and successful acquisition does not prove extraction correctness.
 
-Identifiers are bounded to 256 UTF-8 bytes, raw concept input to 128 entries, and
-each frontier limit to 1..=4096. Invalid input cannot mutate the frontier. Debug
-output contains counts rather than target/concept values. `Drained` and
-`BudgetExhausted` are planning outcomes, never successful-extraction receipts.
+## Get started with the current slice
 
-With the pinned Rust 1.98.1 toolchain installed:
+This branch is source-only and has no published package or release. With the pinned Rust 1.98.1 toolchain installed, the bounded planning example and repository verification commands are:
 
 ```bash
 cargo run --locked --example frontier
@@ -46,19 +50,76 @@ cargo clippy --locked --all-targets -- -D warnings
 RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
 ```
 
-The [example](examples/frontier.rs) is synthetic local planning, not a website
-scrape. The repository now specifies 25 behavioral tests, including 81 small
-priority combinations and the 4096-target boundary. Compiler/test/formatter/lint
-execution remains unverified in the authoring environment; source inspection is
-not a substitute. See the [verification record](docs/verification/semantic-frontier.md).
+The example is synthetic local frontier planning, not a website scrape. These commands describe the source contract; passing them does not prove the complete Veilpick product, a release, browser integration, stealth effectiveness, or permission to access a target.
 
-## Architecture decisions
+## Current Rust slice
+
+The standard-library-only frontier implementation is in [`src/frontier.rs`](src/frontier.rs), exported through `Candidate`, `CrawlFrontier`, `FrontierLimits`, `FrontierError`, and `FrontierStep`.
+
+It:
+
+- orders candidates by distinct declared concept hints and retains FIFO order for ties;
+- preserves lifetime duplicate identities;
+- enforces finite admission and dispatch budgets;
+- treats targets as opaque caller-supplied references rather than discovering URLs or granting access authority;
+- bounds identifiers to 256 UTF-8 bytes, raw concept input to 128 entries, and each frontier limit to `1..=4096`;
+- rejects invalid input without mutating the frontier;
+- keeps target and concept values out of debug output;
+- represents `Drained` and `BudgetExhausted` as planning outcomes, not extraction receipts.
+
+The repository specifies 25 behavioral tests, including 81 small priority combinations and the 4,096-target boundary. Compiler, test, formatter, lint, and documentation execution must be judged from the exact branch head; source inspection is not a substitute. See the [verification record](docs/verification/semantic-frontier.md).
+
+## Product boundary
+
+Veilpick owns the planned Rust task loop, crawl frontier, task-local ontology use, semantic planning, acquisition and stealth orchestration, adaptive extraction, entity reconciliation, challenge orchestration, validation, and extraction provenance.
+
+It does not own:
+
+- the caller’s legal authority, target permission, or data-use decision;
+- publication of organization-wide ontology truth;
+- general identity, secret, browser-policy, or model-provider control planes;
+- a guarantee that an upstream service or proposed integration is available;
+- correctness claims unsupported by observed post-condition evidence.
+
+## Integration context
+
+Veilpick is designed to remain useful as a standalone product while consuming released, versioned contracts when an eligible integration exists.
+
+- [OriginWeave](https://github.com/ContextualWisdomLab/OriginWeave) is the intended reusable owner of governed transport, browser, presentation/fingerprint application, policy, and runtime evidence.
+- [ConceptWeave](https://github.com/ContextualWisdomLab/ConceptWeave) may supply reviewed semantic candidate and domain contracts; task-local inference cannot bypass its publication lifecycle.
+- [contextual-orchestrator](https://github.com/ContextualWisdomLab/contextual-orchestrator) may supply replaceable reasoning behind a bounded contract.
+- [context-graph-contracts](https://github.com/ContextualWisdomLab/context-graph-contracts) may supply interoperable assertion and provenance contracts.
+
+These are integration directions, not current working-capability claims. Optional catalogs, document processors, ranking services, and enterprise identity systems remain behind adapters rather than becoming mandatory dependencies.
+
+## Quality and release gates
+
+A Veilpick release must bind claims to exact-version evidence. At minimum, the shipped path needs:
+
+- reproducible Rust build and package provenance;
+- realistic authorized-target fixtures and post-condition checks;
+- source-to-record provenance and failure/abstention behavior;
+- security, dependency, license, and SBOM evidence;
+- bounded resource, timeout, cancellation, and recovery behavior;
+- integration contract and compatibility tests for every enabled external service;
+- explicit supported and unsupported challenge classes.
+
+The crawl-frontier slice is one planning component, not release evidence for the whole product. Documentation-only decisions and open pull requests remain Proposed until integrated through repository governance. No benchmark, compatibility, deployment, or release claim should be inferred from this README.
+
+## Documentation
 
 - [ADR index](docs/adr/README.md)
-- [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](docs/adr/0002-ontology-based-autonomous-rust-engine.md) defines the product contract and v1 acceptance gates.
-- [ADR 0001: Automated challenge resolution](docs/adr/0001-automated-challenge-resolution.md) defines the required challenge subsystem.
-- [ADR 0003: First-class stealth and ecosystem composition](docs/adr/0003-stealth-and-ecosystem-composition.md) preserves stealth, assigns reuse boundaries, and distinguishes planned dependencies from integrated capabilities.
+- [ADR 0001: Automated challenge resolution](docs/adr/0001-automated-challenge-resolution.md)
+- [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](docs/adr/0002-ontology-based-autonomous-rust-engine.md)
+- [ADR 0003: First-class stealth and ecosystem composition](docs/adr/0003-stealth-and-ecosystem-composition.md)
+- [Semantic frontier implementation plan](docs/superpowers/plans/2026-09-05-semantic-frontier.md)
+- [Semantic frontier verification record](docs/verification/semantic-frontier.md)
+- [Change history](CHANGELOG.md)
+
+## Contributing and support
+
+Use [GitHub Issues](https://github.com/ContextualWisdomLab/Veilpick/issues) for reproducible product, documentation, and integration defects. Contributions should preserve the product boundary, keep unsupported capabilities explicit, and add tests and evidence for every new claim. Report security concerns through the [ContextualWisdomLab security policy](https://github.com/ContextualWisdomLab/.github/blob/main/SECURITY.md), not a public issue.
 
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE).
+Veilpick’s repository content is available under the [Apache License 2.0](LICENSE). Dependencies, generated artifacts, models, and external services retain their own terms and are not relicensed by this repository’s Apache-2.0 grant.
