@@ -10,6 +10,7 @@ This repository currently defines the product and architecture contract. It does
 
 - [Repository overview](../README.md)
 - [Architecture decision index](adr/README.md)
+- [Product and technical gap baseline](product-technical-gap-baseline.md)
 - [ADR 0001: Automated challenge resolution](adr/0001-automated-challenge-resolution.md)
 - [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](adr/0002-ontology-based-autonomous-rust-engine.md)
 - [ADR 0003: First-class stealth and ecosystem composition](adr/0003-stealth-and-ecosystem-composition.md)
