@@ -1,5 +1,7 @@
 # Veilpick
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/ContextualWisdomLab/Veilpick)
+
 **Ontology-guided, autonomous web acquisition—designed to turn an authorized collection goal into source-backed structured data.**
 
 Veilpick is a planned Rust engine for resilient web acquisition. It is intended to discover relevant pages, understand their semantics, adapt extraction as sites change, reconcile entities, and validate what it collected without requiring a person to author and maintain a scraper for every site.
@@ -85,7 +87,7 @@ It does not own:
 
 Veilpick is designed to remain useful as a standalone product while consuming released, versioned contracts when an eligible integration exists.
 
-- [OriginWeave](https://github.com/ContextualWisdomLab/OriginWeave) is the intended reusable owner of governed transport, browser, presentation/fingerprint application, policy, and runtime evidence.
+- [OriginWeave](https://github.com/ContextualWisdomLab/OriginWeave) is the intended reusable owner of governed transport/browser policy, presentation/fingerprint application, and runtime evidence. Veilpick retains task-level acquisition strategy, session-use, pacing, and recovery policy.
 - [ConceptWeave](https://github.com/ContextualWisdomLab/ConceptWeave) may supply reviewed semantic candidate and domain contracts; task-local inference cannot bypass its publication lifecycle.
 - [contextual-orchestrator](https://github.com/ContextualWisdomLab/contextual-orchestrator) may supply replaceable reasoning behind a bounded contract.
 - [context-graph-contracts](https://github.com/ContextualWisdomLab/context-graph-contracts) may supply interoperable assertion and provenance contracts.
@@ -104,10 +106,11 @@ A Veilpick release must bind claims to exact-version evidence. At minimum, the s
 - integration contract and compatibility tests for every enabled external service;
 - explicit supported and unsupported challenge classes.
 
-The crawl-frontier slice is one planning component, not release evidence for the whole product. Documentation-only decisions and open pull requests remain Proposed until integrated through repository governance. No benchmark, compatibility, deployment, or release claim should be inferred from this README.
+The crawl-frontier slice is one planning component, not release evidence for the whole product. ADR decision status records product-owner acceptance; repository integration remains Proposed until the documentation reaches the protected branch through normal governance. No benchmark, compatibility, deployment, or release claim should be inferred from this README.
 
 ## Documentation
 
+- [Bounded documentation index](docs/index.md)
 - [ADR index](docs/adr/README.md)
 - [ADR 0001: Automated challenge resolution](docs/adr/0001-automated-challenge-resolution.md)
 - [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](docs/adr/0002-ontology-based-autonomous-rust-engine.md)

@@ -30,6 +30,8 @@ Veilpick will:
 
 A successful solver invocation, model response, browser command acknowledgement, or interaction attempt is not proof of resolution. Resolution succeeds only when subsequent trusted observation establishes the expected challenge-free post-condition and the intended acquisition can resume.
 
+The minimum trusted-observation contract records the observer's admitted authority; observation time and sequence; the original origin, request, and session correlation; the requested resource identity; and source-backed evidence for each expected post-condition. `ChallengeObservation` carries those facts. `ChallengeResolution` and `ChallengeDisposition` carry the expected condition, accepted freshness window, correlation result, and evidence reference. Missing, stale, cross-origin, cross-session, or wrong-resource evidence cannot produce `resolved`; it returns a typed unresolved or failed disposition.
+
 The autonomous execution path must not pause awaiting human interaction. Any separate operator-assisted workflow is outside the autonomous success path, and an assisted run must never count as a successful autonomous run. Automatic failure is also not successful resolution.
 
 ## Architectural boundary
@@ -52,6 +54,8 @@ The subsystem should expose typed contracts such as `ChallengeObservation`, `Cha
 Challenge observations and outcomes participate in the ontology-guided execution state so the planner can distinguish a missing datum, a changed page, and an unresolved interaction gate. No observation or inferred ontology relation grants network, authentication, consent, or browser-action authority.
 
 LLM/VLM-backed resolution is an implementation strategy, not the definition of the boundary. Deterministic strategies remain usable when semantic reasoning is unnecessary. All strategies share explicit attempt, elapsed-time, resource, and model-cost budgets; they cannot start unbounded retries or silently introduce a human solver.
+
+Evidence may leave the runtime for an LLM/VLM provider only when the admitted task explicitly authorizes that provider and transmission purpose. The strategy must use an allowlisted provider, minimize and redact evidence before transmission, block credentials, cookies, authorization headers, and runtime-owned handles, and apply declared retention and logging controls. The request records the provider, redaction policy, transmitted evidence references, and response provenance. Provider output remains untrusted. If these controls or consent are absent, the provider strategy is unavailable and resolution returns a typed unresolved or failed disposition without a paid or unapproved bypass.
 
 Veilpick must not reinterpret a challenge as successful content acquisition. Challenge observations, attempted resolutions, and post-condition results remain distinguishable in evidence and diagnostics. Page content and model output remain untrusted inputs, and protected credentials stay behind runtime-owned handles.
 
