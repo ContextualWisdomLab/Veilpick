@@ -3,7 +3,7 @@
 - Status: Accepted (product decision; implementation not yet delivered)
 - Date: 2026-09-05
 - Decision source: product-owner clarification of Veilpick's overarching concept
-- Refines: [ADR 0001](0001-automated-challenge-resolution.md), which remains the required challenge subsystem
+- Governs: [ADR 0001](0001-automated-challenge-resolution.md), which remains the required challenge subsystem
 
 ## Context
 
