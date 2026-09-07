@@ -44,7 +44,7 @@ Ontology guides the semantic acquisition loop; stealth remains a separate acquis
 
 There is no install or quickstart command yet because no executable Veilpick artifact has been released. To evaluate or contribute to the direction:
 
-1. read the [architecture decision index](docs/adr/README.md);
+1. start with the bounded [documentation index](docs/index.md);
 2. review the product and v1 acceptance contract in [ADR 0002](docs/adr/0002-ontology-based-autonomous-rust-engine.md);
 3. inspect the supported-challenge requirements in [ADR 0001](docs/adr/0001-automated-challenge-resolution.md);
 4. use [ADR 0003](docs/adr/0003-stealth-and-ecosystem-composition.md) to distinguish Veilpick responsibilities from optional ecosystem integrations.
@@ -67,7 +67,7 @@ It does not own:
 
 Veilpick is designed to remain useful as a standalone product while consuming released, versioned contracts when an eligible integration exists.
 
-- [OriginWeave](https://github.com/ContextualWisdomLab/OriginWeave) is the intended reusable owner of governed transport, browser, presentation/fingerprint application, policy, and runtime evidence.
+- [OriginWeave](https://github.com/ContextualWisdomLab/OriginWeave) is the intended reusable owner of governed transport/browser policy, presentation/fingerprint application, and runtime evidence. Veilpick retains task-level acquisition strategy, session-use, pacing, and recovery policy.
 - [ConceptWeave](https://github.com/ContextualWisdomLab/ConceptWeave) may supply reviewed semantic candidate and domain contracts; task-local inference cannot bypass its publication lifecycle.
 - [contextual-orchestrator](https://github.com/ContextualWisdomLab/contextual-orchestrator) may supply replaceable reasoning behind a bounded contract.
 - [context-graph-contracts](https://github.com/ContextualWisdomLab/context-graph-contracts) may supply interoperable assertion and provenance contracts.
@@ -86,10 +86,11 @@ A Veilpick release must bind claims to exact-version evidence. At minimum, the s
 - integration contract and compatibility tests for every enabled external service;
 - explicit supported and unsupported challenge classes.
 
-Documentation-only decisions and open pull requests remain Proposed until integrated through repository governance. No benchmark, compatibility, deployment, or release claim should be inferred from this README.
+ADR decision status records product-owner acceptance; repository integration remains Proposed until the documentation reaches the protected branch through normal governance. No benchmark, compatibility, deployment, or release claim should be inferred from this README.
 
 ## Documentation
 
+- [Bounded documentation index](docs/index.md)
 - [ADR index](docs/adr/README.md)
 - [ADR 0001: Automated challenge resolution](docs/adr/0001-automated-challenge-resolution.md)
 - [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](docs/adr/0002-ontology-based-autonomous-rust-engine.md)
