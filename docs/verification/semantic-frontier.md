@@ -1,7 +1,8 @@
 # Semantic frontier implementation: verification boundary
 
-Date: 2026-09-05. Source predecessor: `26d94719943892b619349a4a0e0835c4cf5a46d4`.
-This receipt accompanies implementation source, not a successful Rust execution.
+Initial source date: 2026-09-05. Verification refreshed: 2026-10-01.
+Source predecessor: `26d94719943892b619349a4a0e0835c4cf5a46d4`.
+This receipt separates local verification from exact-head hosted evidence.
 
 ## Delivered source
 
@@ -16,25 +17,25 @@ This receipt accompanies implementation source, not a successful Rust execution.
   `product-detail`, `product-name`, then `catalog-index`; this is an expected
   result, not an observed run in this environment.
 
-## Checks actually performed
+## Historical hosted evidence
 
-The five local baseline copies matched their remote Git blob identities before
-editing. Current static inspection checks test-definition counts, public exports,
-absence of runtime dependencies, unchanged original tests/toolchain/lockfile,
-Markdown links/fences, UTF-8/newlines, and staged whitespace. Rust lexical scanning
-is recorded separately and is not a parser, type checker, formatter, or compiler.
+GitHub Actions run `34084356474`, job `101625442120`, checked out exact Draft PR #2
+head `556b30b9eaac083ccb52cd6c5193411df0fb81e8` with Rust 1.98.1. All 25 tests
+passed. `cargo fmt --all --check` then failed on `src/frontier.rs`,
+`tests/frontier_boundaries.rs`, and `tests/frontier_contract.rs`; Clippy and rustdoc
+did not execute. A passing test step did not make that head merge-ready.
 
-## Execution remains unverified
+## 2026-10-01 local repair evidence
 
-Local `cargo test --locked --all-targets` on the original test-only source and
-expanded tests exited 127 because Cargo was absent. The environment also lacks
-`rustc`; normal toolchain-host resolution/download attempts did not succeed.
-The original GitHub push run `33948681099`, job `101259264294`, remained queued
-when re-read during implementation, with no executed steps.
+The exact failing head reproduced the same rustfmt diff locally with Cargo and
+rustc 1.98.1. Before formatting, `cargo test --locked --all-targets` passed all 25
+tests, `cargo clippy --locked --all-targets -- -D warnings` passed, and
+`RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps` passed. The repair applies
+only Rust 1.98.1 rustfmt output and evidence corrections; it does not change
+frontier behavior, dependencies, or the pinned toolchain.
 
-The follow-up request advances implementation source despite that execution
-limitation. The source was test-first, but an executed RED/GREEN cycle is not
-claimed. The implementation must still pass these unchanged-source checks:
+The repaired branch must pass the complete command set below on the final local
+tree and again on the exact unchanged hosted head:
 
 ```bash
 cargo test --locked --all-targets
@@ -44,10 +45,11 @@ RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
 cargo run --locked --example frontier
 ```
 
-Keep PR #2 Draft while execution and its stacked documentation dependency remain
-unverified/unintegrated. A pending job, source review, or model review is not test
-success or protected-branch approval. No workflow, toolchain, lockfile, runtime
-dependency, parent PR, protected branch, release, or merge is changed here.
+Keep PR #2 Draft until the exact hosted head has required checks and independent
+approval. A local pass, pending job, source review, or model review is not
+protected-branch approval. The branch integrates protected `develop` through an
+ordinary merge; no history rewrite, force-push, workflow, toolchain, lockfile,
+runtime dependency, protected branch, release, or product behavior change is made.
 
 Stealth, ontology induction, acquisition adapters, extraction, and supported-class
 automated challenge resolution remain required product capabilities. This frontier

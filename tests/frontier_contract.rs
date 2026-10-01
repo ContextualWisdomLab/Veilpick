@@ -7,7 +7,10 @@ type TestResult = Result<(), Box<dyn std::error::Error>>;
 fn frontier(max_candidates: usize, max_attempts: usize) -> Result<CrawlFrontier, FrontierError> {
     CrawlFrontier::new(
         &["urn:product:name", "urn:product:price"],
-        FrontierLimits { max_candidates, max_attempts },
+        FrontierLimits {
+            max_candidates,
+            max_attempts,
+        },
     )
 }
 
@@ -23,7 +26,10 @@ fn prioritizes_explicit_goal_concepts_over_discovery_only_targets() -> TestResul
     let mut queue = frontier(4, 4)?;
     queue.enqueue(Candidate::new("discovery", &[])?)?;
     queue.enqueue(Candidate::new("name-only", &["urn:product:name"])?)?;
-    queue.enqueue(Candidate::new("both", &["urn:product:name", "urn:product:price"])?)?;
+    queue.enqueue(Candidate::new(
+        "both",
+        &["urn:product:name", "urn:product:price"],
+    )?)?;
     assert_eq!(selected(&mut queue)?.id(), "both");
     assert_eq!(selected(&mut queue)?.id(), "name-only");
     assert_eq!(selected(&mut queue)?.id(), "discovery");
@@ -45,7 +51,10 @@ fn equal_semantic_priority_preserves_discovery_order() -> TestResult {
 fn duplicate_concept_hints_do_not_inflate_priority() -> TestResult {
     let mut queue = frontier(2, 2)?;
     queue.enqueue(Candidate::new("first", &["urn:product:name"])?)?;
-    queue.enqueue(Candidate::new("second", &["urn:product:price", "urn:product:price"])?)?;
+    queue.enqueue(Candidate::new(
+        "second",
+        &["urn:product:price", "urn:product:price"],
+    )?)?;
     assert_eq!(selected(&mut queue)?.id(), "first");
     assert_eq!(selected(&mut queue)?.concepts().len(), 1);
     Ok(())
@@ -70,7 +79,10 @@ fn total_attempt_budget_cannot_reset_by_repeated_polling() -> TestResult {
     queue.enqueue(Candidate::new("second", &[])?)?;
     selected(&mut queue)?;
     for _ in 0..20 {
-        assert!(matches!(queue.next_candidate(), FrontierStep::BudgetExhausted));
+        assert!(matches!(
+            queue.next_candidate(),
+            FrontierStep::BudgetExhausted
+        ));
     }
     assert_eq!(queue.attempts(), 1);
     assert_eq!(queue.len(), 1);
@@ -117,25 +129,55 @@ fn drained_is_not_a_successful_collection_claim() -> TestResult {
 #[test]
 fn invalid_identifiers_fail_before_admission() {
     for value in ["", " ", "has space", "line\nbreak", "\u{0000}"] {
-        assert!(matches!(Candidate::new(value, &[]), Err(FrontierError::InvalidIdentifier)));
-        assert!(matches!(Candidate::new("valid", &[value]), Err(FrontierError::InvalidIdentifier)));
+        assert!(matches!(
+            Candidate::new(value, &[]),
+            Err(FrontierError::InvalidIdentifier)
+        ));
+        assert!(matches!(
+            Candidate::new("valid", &[value]),
+            Err(FrontierError::InvalidIdentifier)
+        ));
     }
     let oversized = "a".repeat(257);
-    assert!(matches!(Candidate::new(&oversized, &[]), Err(FrontierError::InvalidIdentifier)));
+    assert!(matches!(
+        Candidate::new(&oversized, &[]),
+        Err(FrontierError::InvalidIdentifier)
+    ));
 }
 
 #[test]
 fn zero_or_excessive_limits_and_empty_goals_fail_closed() {
     for limits in [
-        FrontierLimits { max_candidates: 0, max_attempts: 1 },
-        FrontierLimits { max_candidates: 1, max_attempts: 0 },
-        FrontierLimits { max_candidates: 4097, max_attempts: 1 },
-        FrontierLimits { max_candidates: 1, max_attempts: 4097 },
+        FrontierLimits {
+            max_candidates: 0,
+            max_attempts: 1,
+        },
+        FrontierLimits {
+            max_candidates: 1,
+            max_attempts: 0,
+        },
+        FrontierLimits {
+            max_candidates: 4097,
+            max_attempts: 1,
+        },
+        FrontierLimits {
+            max_candidates: 1,
+            max_attempts: 4097,
+        },
     ] {
-        assert!(matches!(CrawlFrontier::new(&["urn:goal"], limits), Err(FrontierError::InvalidLimits)));
+        assert!(matches!(
+            CrawlFrontier::new(&["urn:goal"], limits),
+            Err(FrontierError::InvalidLimits)
+        ));
     }
     assert!(matches!(
-        CrawlFrontier::new(&[], FrontierLimits { max_candidates: 1, max_attempts: 1 }),
+        CrawlFrontier::new(
+            &[],
+            FrontierLimits {
+                max_candidates: 1,
+                max_attempts: 1
+            }
+        ),
         Err(FrontierError::InvalidConceptSet)
     ));
 }
@@ -143,9 +185,18 @@ fn zero_or_excessive_limits_and_empty_goals_fail_closed() {
 #[test]
 fn raw_concept_input_count_is_bounded_even_when_all_are_duplicates() {
     let oversized = vec!["urn:goal"; 129];
-    assert!(matches!(Candidate::new("valid", &oversized), Err(FrontierError::InvalidConceptSet)));
     assert!(matches!(
-        CrawlFrontier::new(&oversized, FrontierLimits { max_candidates: 1, max_attempts: 1 }),
+        Candidate::new("valid", &oversized),
+        Err(FrontierError::InvalidConceptSet)
+    ));
+    assert!(matches!(
+        CrawlFrontier::new(
+            &oversized,
+            FrontierLimits {
+                max_candidates: 1,
+                max_attempts: 1
+            }
+        ),
         Err(FrontierError::InvalidConceptSet)
     ));
 }

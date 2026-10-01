@@ -148,10 +148,7 @@ impl CrawlFrontier {
     /// Returns [`FrontierError::InvalidLimits`] for an invalid limit,
     /// [`FrontierError::InvalidConceptSet`] for empty or excessive raw input,
     /// or [`FrontierError::InvalidIdentifier`] for a malformed concept identifier.
-    pub fn new(
-        required_concepts: &[&str],
-        limits: FrontierLimits,
-    ) -> Result<Self, FrontierError> {
+    pub fn new(required_concepts: &[&str], limits: FrontierLimits) -> Result<Self, FrontierError> {
         if !(1..=MAX_LIMIT).contains(&limits.max_candidates)
             || !(1..=MAX_LIMIT).contains(&limits.max_attempts)
         {
@@ -258,7 +255,9 @@ impl fmt::Debug for CrawlFrontier {
 fn validate_identifier(value: &str) -> Result<(), FrontierError> {
     if value.is_empty()
         || value.len() > MAX_IDENTIFIER_BYTES
-        || value.chars().any(|ch| ch.is_whitespace() || ch.is_control())
+        || value
+            .chars()
+            .any(|ch| ch.is_whitespace() || ch.is_control())
     {
         return Err(FrontierError::InvalidIdentifier);
     }

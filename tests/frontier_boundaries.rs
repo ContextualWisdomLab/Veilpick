@@ -12,7 +12,10 @@ fn limits(max_candidates: usize, max_attempts: usize) -> FrontierLimits {
 }
 
 fn frontier(max_candidates: usize, max_attempts: usize) -> Result<CrawlFrontier, FrontierError> {
-    CrawlFrontier::new(&["urn:name", "urn:price"], limits(max_candidates, max_attempts))
+    CrawlFrontier::new(
+        &["urn:name", "urn:price"],
+        limits(max_candidates, max_attempts),
+    )
 }
 
 fn selected(queue: &mut CrawlFrontier) -> Result<Candidate, Box<dyn std::error::Error>> {
@@ -50,7 +53,14 @@ fn identifier_limits_count_utf8_bytes_not_characters() -> TestResult {
 
 #[test]
 fn unicode_whitespace_and_controls_are_rejected_in_every_identifier_position() {
-    for value in ["", "a\u{00a0}b", "a\u{3000}b", "a\u{007f}b", "a\u{0080}b", "\t"] {
+    for value in [
+        "",
+        "a\u{00a0}b",
+        "a\u{3000}b",
+        "a\u{007f}b",
+        "a\u{0080}b",
+        "\t",
+    ] {
         assert!(matches!(
             Candidate::new(value, &[]),
             Err(FrontierError::InvalidIdentifier)
@@ -241,11 +251,23 @@ fn debug_output_does_not_disclose_opaque_ids_or_concepts() -> TestResult {
 #[test]
 fn every_error_has_a_static_non_reflecting_display_message() {
     let cases = [
-        (FrontierError::InvalidIdentifier, "invalid frontier identifier"),
-        (FrontierError::InvalidConceptSet, "invalid frontier concept set"),
+        (
+            FrontierError::InvalidIdentifier,
+            "invalid frontier identifier",
+        ),
+        (
+            FrontierError::InvalidConceptSet,
+            "invalid frontier concept set",
+        ),
         (FrontierError::InvalidLimits, "invalid frontier limits"),
-        (FrontierError::UnknownConcept, "candidate has an undeclared concept"),
-        (FrontierError::CandidateLimitReached, "frontier lifetime candidate limit reached"),
+        (
+            FrontierError::UnknownConcept,
+            "candidate has an undeclared concept",
+        ),
+        (
+            FrontierError::CandidateLimitReached,
+            "frontier lifetime candidate limit reached",
+        ),
     ];
     for (error, expected) in cases {
         assert_eq!(error.to_string(), expected);
