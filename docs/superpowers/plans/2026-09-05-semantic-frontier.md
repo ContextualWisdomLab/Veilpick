@@ -29,7 +29,7 @@ Files: `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `src/lib.rs`, `tests/f
 - [x] Add 13 boundary/error-display requirements in `tests/frontier_boundaries.rs` and the synthetic `examples/frontier.rs` consumer.
 - [x] Pass both focused test files on the implementation revision; exact-head run `36806174987` included all 25 tests.
 - [x] Run `cargo fmt --all --check`, `cargo test --locked --all-targets`, `cargo clippy --locked --all-targets -- -D warnings`, and `RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps` successfully on unchanged head `4f62c9d81b5811bfdd26de75640445345f75c32b` in run `36806174987`.
-- [x] Update implementation-source status and CHANGELOG; keep Draft because executed verification is unavailable.
+- [x] Update implementation-source status and CHANGELOG; keep Draft because independent review and final-head governance evidence remain unavailable.
 
 Expected positive behavior:
 

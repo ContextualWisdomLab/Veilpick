@@ -49,8 +49,9 @@ cargo run --locked --example frontier
 ```
 
 Keep PR #2 Draft until all required governance checks and independent approval
-exist. The exact hosted Rust lane is green, but a passing feature head, source
-review, or model review is not protected-branch approval. The branch integrates protected `develop` through an
+exist. The implementation-bearing predecessor's exact hosted Rust lane is green,
+but a passing predecessor, source review, or model review is not final-head
+protected-branch approval. The branch integrates protected `develop` through an
 ordinary merge; no history rewrite, force-push, workflow, toolchain, lockfile,
 runtime dependency, protected branch, release, or product behavior change is made.
 
