@@ -1,48 +1,37 @@
-# Site Reputation Engine Implementation Plan
+# Wardnet Reputation Consumer Integration Plan
 
-> **For agentic workers:** Use the installed subagent-driven-development or executing-plans workflow when implementing these slices. The steps below are not executed by this design PR.
+> **For agentic workers:** Execute only after an immutable Wardnet contract/release exists. This design PR does not authorize owner implementation or a mutable cross-repository dependency.
 
-**Goal:** Independently return reproducible, scoped reputation assessments with provenance, coverage and lifecycle-aware evidence.
+**Goal:** Consume Wardnet-owned destination-security decisions without duplicating reputation policy, evidence lifecycle, storage, or transport authority.
 
-**Architecture:** A pure Rust evaluator reads immutable admitted snapshots. Separate provider/storage adapters prepare those snapshots; caller policy owns any action decision.
+**Architecture:** A Veilpick anti-corruption layer implements a narrow `ReputationPort`. Production binds only to a released Wardnet client/schema. Until then, the port is feature-disabled or supplied by a deterministic test double.
 
-**Tech Stack:** Rust 2024, versioned typed contracts, PostgreSQL persistence adapter, deterministic replay and optional shadow-mode learned URL signals. No runtime dependency is added here.
-
-**Spec:** [Shared design](../../design/access-and-reputation-engines.md) and [ADR 0005](../../adr/0005-evidence-based-site-reputation-engine.md).
+**Spec:** [Composition design](../../design/access-and-reputation-engines.md) and [ADR 0005](../../adr/0005-evidence-based-site-reputation-engine.md).
 
 ## Global constraints
 
-No `waf-ids-core`, `anti-bot-core` or planner-internal dependency. No network I/O in assessment. Security, source reliability and operational access remain separate; unknown is not safe. Initial per-query evidence ceiling is 256. No global unvalidated score or inherited IP-to-publisher trust. Wardnet is optional.
+No local reputation evaluator, provider ingestion, evidence database, learned URL model, standalone reputation service, Wardnet source import, shared database, cross-service SQL, or temporary-branch binding. An allow result does not grant network authority. Required reputation unavailability fails protected work closed.
 
-## Slice R1: Subject and evidence admission
+## Slice C1: Released contract admission
 
-Create `crates/site-reputation-core/{Cargo.toml,src/lib.rs,src/subject.rs,src/evidence.rs}` and that crate's `tests/admission.rs`. Adopt the reviewed semantic-frontier/root-workspace foundation independently of A1; do not create a competing foundation or require the anti-bot package to use this engine. Expose `ReputationEngine::assess` with the specification's query/snapshot/clock inputs and assessment/error outputs.
+- [ ] Wait for the Wardnet owner lane to merge and publish an immutable compatible schema/client release; record its version, digest, license, SBOM/provenance, and protected-branch evidence.
+- [ ] Write failing consumer conformance tests first for unknown major schema, forged tenant/workload/purpose, wrong typed subject, expired/revoked generation, impossible action/reason combinations, and TTL-only insufficient provenance.
+- [ ] Add only the minimum `ReputationPort` DTO/validation boundary needed to pass those fixtures. Do not reproduce owner reduction rules.
 
-- [ ] First test different schemes/ports as different origins, IP versus host subjects, query-sensitive URL scope, malformed lifecycle, unsupported schema, missing provenance and forged tenant scope. None may widen subject or authority.
-- [ ] Run `cargo test -p site-reputation-core --test admission`; record actual failures, implement bounded validation and repeat. Keep canonical normalization inside a reviewed adapter; normalization is not destination authorization.
-- [ ] Commit the independently testable contract and matching documentation before integrating any feed.
+## Slice C2: Acquisition ACL
 
-## Slice R2: Lifecycle, coverage and aggregation
+- [ ] Write failing tests for adverse deny, authorized unknown, unhealthy required-source state, owner outage, redirect/new peer, cancellation, and stale cache replay.
+- [ ] Map the admitted envelope to Veilpick planning outcomes while preserving exact reason and evidence references. Recheck the owner decision and separate OriginWeave/EgressWeave authority before every side effect.
+- [ ] Keep source-content reliability, extraction completeness, and challenge friction as separate Veilpick concepts; none may weaken a destination-security denial.
 
-Create `src/{snapshot.rs,lifecycle.rs,assessment.rs}` and `tests/{lifecycle.rs,dimensions.rs}` inside the core crate. Inputs are admitted evidence versions; outputs are dimension states, included/excluded evidence and coverage leases.
+## Slice C3: Cache, audit, and operability
 
-- [ ] First encode these exact counterexamples: an empty snapshot is `Unknown`; complete requested provider coverage without a match is `NoKnownThreat`, never `Safe`; a still-valid threat survives another provider's outage; ten same-lineage reports do not become ten independent confirmations; CAPTCHA-only evidence changes access state but not reliability/security.
-- [ ] Add permanent revocation followed by older-record replay, expiry, clock regression, contradictory evidence and 257-record overflow cases. Revocation cannot be undone; overflow cannot produce a clearance result.
-- [ ] Run `cargo test -p site-reputation-core --test lifecycle --test dimensions`; record failures, implement deterministic reduction and rerun before committing.
+- [ ] Test cache keys across tenant, workload, purpose, typed subject, owner release, rule version, snapshot generation, and expiry. Revocation must invalidate affected entries.
+- [ ] Test secret/body/query redaction, retention/deletion, owner latency/outage, rollback, and incident audit. Never store owner evidence through direct database access.
+- [ ] Measure the released adapter under realistic concurrent workloads. If it serves a product request path, demonstrate the declared page/request p95 target without omitting failures or shrinking samples.
 
-## Slice R3: Storage and optional providers
+## Slice C4: Release and consumer bump
 
-Create `adapters/reputation-postgres/src/lib.rs`, `adapters/reputation-postgres/migrations/0001_evidence.sql`, `adapters/reputation-providers/src/{lib.rs,stix.rs,wardnet.rs}` and `tests/provider_storage_contract.rs`. Provider adapters produce admitted observations plus completeness metadata, not policy decisions.
-
-- [ ] Test authenticated provider identity, source-version uniqueness, atomic snapshot/coverage publication, persistent revocation tombstones, duplicate/conflicting payloads, retention enforcement and cross-tenant reads with real PostgreSQL.
-- [ ] Test a Wardnet row containing TTL but no authoritative observation anchor: it must return `InsufficientProvenance`, not a fresh threat. A SQL-injection signature or ingress-client event is not a destination-site finding. Fetching original evidence must use a separately governed adapter.
-- [ ] Run provider/storage tests, implement minimal translations and transaction boundaries, and test Wardnet unavailable. A missing optional feed changes coverage, not service liveness. Commit with producer fixture versions and loss/omission documentation.
-
-## Slice R4: Standalone, evaluation and composition
-
-Create `apps/site-reputation-engine/src/main.rs`, `adapters/veilpick-reputation/src/lib.rs`, `tests/standalone_reputation.rs`, `tests/fixtures/reputation-manifest.json` and `docs/acceptance/reputation-results.md`.
-
-- [ ] Test assessment without a crawler, source outage, replay reproducibility, cache key isolation, revocation invalidation and no credentials/body leakage. Test caller policy separately: a result must not create network permission.
-- [ ] Lock domain/time-separated labeled fixtures and source lineages. Report feed-only and rule-only precision/recall, false positives, abstention/coverage, drift and resource consumption; a learned candidate requires a separate shadow evaluation and calibration report before activation.
-- [ ] Run `cargo fmt --all --check`, `cargo test --locked --workspace`, `cargo clippy --locked --workspace --all-targets -- -D warnings` and service/PostgreSQL tests. Acquire exact-head hosted security/review evidence; do not infer it from local replay.
-- [ ] Publish independent package/schema version and compatibility fixtures only through normal release governance. This design plan does not authorize merge or release.
+- [ ] Run the complete Veilpick test, lint, documentation, security, SBOM/provenance, contract, and end-to-end lanes on one unchanged head.
+- [ ] Publish the Veilpick consumer version through normal governance, then record the exact Wardnet release compatibility and rollback path.
+- [ ] Enable production composition only after owner release and consumer bump evidence are immutable. Open owner work, source URLs, branch archives, and copied fixtures are not substitutes.

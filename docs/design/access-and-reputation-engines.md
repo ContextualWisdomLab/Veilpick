@@ -1,78 +1,57 @@
-# Anti-bot and site reputation engines: product and technical design
+# Anti-bot engine and Wardnet reputation ACL: product and technical design
 
 Status: Proposed design, 2026-09-05. No runtime implementation is claimed. This specification implements the existing autonomous product contract without redefining it. Read [ADR 0004](../adr/0004-independent-anti-bot-engine.md), [ADR 0005](../adr/0005-evidence-based-site-reputation-engine.md) and the [source record](../research/access-and-reputation-evidence.md) together.
 
 ## 1. Product boundary and deployment
 
-Veilpick composes two independently usable Rust-first engines. The anti-bot engine answers how to perform permitted acquisition despite access friction; the reputation engine answers what scoped evidence says about the target/source. The ontology planner owns the collection goal, source selection, entity mapping and extraction validation. Neither engine replaces that planner.
+Veilpick incubates one independently usable Rust-first anti-bot access/challenge engine and consumes destination-security reputation from Wardnet through a released contract. The ontology planner owns collection goals, source selection, entity mapping, and extraction validation. It does not become a second security-policy writer.
 
 | Owner | Owns | Does not own |
 | --- | --- | --- |
-| Anti-bot engine | Access state, coherent profile selection, pacing, challenge strategy and resolution assessment | WAF/IDS, site truth, network grants, ontology goal completion |
-| Reputation engine | Evidence admission, subject identity, provenance, lifecycle, coverage and multidimensional assessment | Crawling, challenge execution, gateway enforcement, fact fabrication |
-| Veilpick composition | Goal/ontology planning, call ordering, policy input, extraction validation | A parallel HTTP/browser authority implementation |
-| OriginWeave adapter | Binding to governed destination/TLS/HTTP/browser/presentation/policy/evidence capabilities | Claiming that HTTP success proves extracted truth |
-| Optional Wardnet adapter | Sanitized, source-bound security observations | Passing a WAF block decision through as reputation or access authority |
+| Anti-bot engine | Access state, coherent profile selection, pacing, challenge strategy and resolution assessment | WAF/IDS, destination reputation, network grants, ontology goal completion |
+| Wardnet | Destination maliciousness/reputation policy, evidence lifecycle, organizational admission policy, SOC accountability | Browser challenge execution, Veilpick extraction truth, transport authorization |
+| Veilpick reputation ACL | Released-envelope validation and translation into bounded planning outcomes | Reputation reduction, feed ingestion, evidence storage, model training, Wardnet policy |
+| Veilpick composition | Goal/ontology planning, call ordering, source-content validation, extraction acceptance | A parallel HTTP/browser or reputation authority implementation |
+| OriginWeave/EgressWeave adapters | Their released runtime and egress authorization responsibilities | Treating Wardnet allow or HTTP success as goal completion |
 
-The ecosystem composition contract in [ADR 0003](../adr/0003-stealth-and-ecosystem-composition.md) remains controlling: no duplicate provider gateway, ranking algorithm, ontology-publication lifecycle or graph truth hierarchy is introduced.
-
-Both engines have independent libraries and standalone entry points. Initial repository co-location avoids a premature repository split while package boundaries, schemas and release versions remain separate. An extraction to separate repositories must preserve the same conformance fixtures and require no core-domain rewrite. A separately deployed service uses authenticated, tenant-scoped transport; in-process composition is the initial latency-sensitive mode.
+Merged Wardnet PR #171 is the protected ownership correction. Wardnet PR #173 is Proposed owner work only; Veilpick cannot consume it until a compatible immutable release exists. Until then, the reputation port remains feature-disabled or uses a deterministic test double. No source import, shared database, cross-service SQL, or temporary-branch dependency is allowed.
 
 ## 2. Composition and trust boundaries
 
 ```mermaid
 flowchart TD
-  Goal[Goal plus existing authority and budgets] --> Planner[Veilpick ontology planner]
-  Planner --> Reputation[Site reputation assessment]
-  Feeds[Admitted independent evidence providers] --> Reputation
-  Wardnet[Optional Wardnet observations] --> FeedAdapter[Versioned provider adapter]
-  FeedAdapter --> Reputation
-  Reputation --> Policy[Caller policy and source selection]
-  Policy --> Access[Anti-bot access state machine]
-  Access --> Runtime[OriginWeave governed runtime adapter]
-  Runtime --> Observation[Authenticated bounded observations]
+  Goal[Goal plus authority and budgets] --> Planner[Veilpick planner]
+  Wardnet[Released Wardnet decision] --> ACL[Reputation ACL]
+  ACL --> Policy[Planning policy]
+  Planner --> Policy
+  Policy --> Access[Anti-bot state machine]
+  Access --> Runtime[Governed runtime]
+  Runtime --> Observation[Bounded observation]
   Observation --> Access
-  Access --> Resolver[Admitted automatic resolver]
-  Resolver --> Runtime
-  Access --> Extract[Veilpick extraction and validation]
-  Extract --> Result[Goal result with provenance]
-  Observation --> Intake[Asynchronous evidence intake]
-  Intake --> Reputation
+  Access --> Extract[Extraction validation]
+  Extract --> Result[Provenance result]
 ```
 
-Arrows are messages/evidence, not transitive permission. Reputation queries use an existing snapshot and never synchronously crawl the queried site. New observations enter a later snapshot; the access engine cannot repeatedly call itself through reputation enrichment. The composition layer captures a snapshot generation for each planning decision and rechecks policy, revocation and runtime authority immediately before a side effect.
+Arrows are messages/evidence, not transitive permission. The ACL authenticates tenant/workload/purpose and exact typed subject, validates schema/action/reason/evidence-health/generation/expiry, and returns a bounded planning input. Wardnet allow is not network authority; OriginWeave/EgressWeave checks still apply before each side effect. A redirect, authority change, DNS re-resolution, or actual-peer change invalidates the prior destination decision.
 
-Untrusted page/model content cannot change a provider allowlist, origin grant, task goal, acceptance threshold or budget. A serialized origin, profile or proof reference is descriptive until its owning adapter validates it. Service requests must authenticate the submitting principal and its tenant scope; provider ingestion uses separate provider identities. Authorization cannot be inferred from caller-supplied tenant fields.
+Untrusted page/model content cannot change a provider allowlist, owner decision, origin grant, task goal, acceptance threshold, or budget. Veilpick never enriches a reputation decision by synchronously crawling the queried site or reading Wardnet storage.
 
 ## 3. Proposed contracts
 
-These names and signatures describe a future API; they are not compilable source or existing upstream types.
+These signatures describe future consumer ports, not existing released upstream types.
 
 ```text
 AntiBotEngine.advance(event: AccessEvent, context: AccessContext)
     -> Result<AccessTransition, AccessError>
-ReputationEngine.assess(query: ReputationQuery, snapshot: EvidenceSnapshot,
-                        clock: TrustedClockSample)
-    -> Result<SiteAssessment, AssessmentError>
+ReputationPort.assess(query: ReputationQuery)
+    -> Result<ReputationDecisionEnvelope, ReputationPortError>
 ```
 
-`AccessEvent` is one of admitted task, runtime observation, resolution attempt outcome, cancellation or recovered reservation. `AccessContext` contains immutable task/tenant identifiers, runtime-owned authority handles, policy/profile/strategy versions, budget ledger reference and a trusted time sample. `AccessTransition` contains the next state, proposed bounded effects, consumed/reserved budget and reason/evidence references; it cannot dispatch I/O itself. The trusted host durably reserves effects, revalidates authority and executes them at most once per effect identifier, reconciling ambiguity rather than assuming remote exactly-once delivery.
+`AccessEvent`, `AccessContext`, and `AccessTransition` retain the bounded state/effect contract from ADR 0004. The trusted host reserves effects, revalidates authority, and reconciles ambiguity rather than assuming remote exactly-once delivery.
 
-`ReputationQuery` contains an exact typed subject, requested dimensions/provider coverage, authenticated tenant scope, consumer freshness limits and purpose. `EvidenceSnapshot` is an immutable, admitted generation, not arbitrary JSON supplied by a website. `SiteAssessment` contains schema/assessment/rule versions, subject, generation, `as_of`, `expires_at`, separate dimension states, included/excluded evidence references and coverage status. `AssessmentError` distinguishes invalid input, unauthorized scope and resource overflow from an ordinary `Unknown` assessment.
+`ReputationQuery` binds authenticated tenant, workload, purpose, and exact typed destination subject. The returned owner envelope must bind schema/decision/rule versions, action and reason, evidence-health/coverage state, snapshot generation, `as_of`, `expires_at`, revocation identity, evidence references, and immutable owner release identity. Unknown major schemas, malformed lifecycle, forged scope, expired/revoked generations, and inconsistent action/reason pairs fail closed.
 
-`ThreatObservationV1` is the proposed optional provider boundary, not a current Wardnet endpoint:
-
-| Field group | Required contract |
-| --- | --- |
-| Identity | `schema_version`, authenticated `provider_id`, `source_record_id`, `source_version`, typed `subject`, exact `scope` |
-| Time | `observed_at` when genuinely supplied, `collected_at`, `valid_from`, optional source `valid_until`, separately labeled consumer expiry |
-| Meaning | Finding type, source severity, optional producer confidence, lifecycle/revocation and source completeness |
-| Provenance | Original source references, parent/derived-record references, redacted content digest where permitted, adapter version |
-| Isolation | Authenticated tenant/public-feed namespace and distribution/retention restrictions |
-
-An unavailable field remains explicitly missing. A Wardnet TTL without an authoritative anchoring time is insufficient for a current positive assertion. Such a row may be retained as incomplete evidence but cannot become a fresh enforcement-grade finding. An IP finding remains IP-scoped. Generic WAF signatures such as SQL-injection patterns and gateway client-IP incidents cannot become destination-site findings. An adapter must either obtain the original complete producer record or return `InsufficientProvenance`.
-
-Core DTOs use versioned closed discriminants and bounded fields; unknown major schemas and malformed lifecycle fields are rejected. Additive metadata remains non-authorizing. Diagnostic outputs carry counts and identifiers, not secret-bearing payloads. Adapter compatibility tests, not shared database tables, define cross-owner integration.
+No `ReputationEngine`, `EvidenceSnapshot`, `ThreatObservationV1` provider intake, or reputation database is defined in Veilpick. Those are canonical-owner concerns. Consumer conformance fixtures, not shared tables or copied owner source, define compatibility.
 
 ## 4. Resource, failure and privacy design
 
@@ -91,17 +70,17 @@ Parse both HTTP-date and delay-seconds `Retry-After` forms at the protocol adapt
 
 Use per-key durable reservations and fenced leases for distributed quota/effect ownership. A restart restores cooldowns, attempt counters and unresolved effects before dispatch. Lease loss prevents new actions; ambiguous completed writes consume their reserved budget until reconciled. Cancellation stops new work but does not erase prior attempts or effects.
 
-Persist accepted reputation observations, source versions, revocation tombstones, snapshot manifests and policy/rule revisions in a PostgreSQL adapter. Anti-bot durable budget/effect records use a separate schema and credentials. A deployment may omit persistent reputation storage only for explicitly ephemeral evaluation; production restart/replay acceptance still requires durability. Neither core contains SQL or mandates a running database for deterministic replay tests.
+Wardnet owns reputation evidence persistence, source versions, revocation tombstones, snapshot manifests, and policy/rule revisions. Veilpick stores no owner evidence through direct database access. A bounded consumer cache may retain admitted envelopes only under complete tenant/workload/purpose/subject/release/rule/generation keys and never past owner expiry; revocation invalidates affected entries. Anti-bot durable budget/effect records remain a separate Veilpick schema and credential boundary.
 
 Store service configuration in typed registry-backed settings and credentials behind opaque handles, not runtime raw environment reads. Redact URL userinfo and query values from telemetry. Preserve URL-sensitive matching only inside an authorized protected adapter; an HMAC lookup key requires a managed tenant key and is not anonymization. Raw bodies/screenshots are opt-in evidence captures with per-class retention, access control and deletion enforcement. Cross-tenant learning or public export of private observations is disabled by default. Source distribution restrictions propagate to derivative assessments; a content digest does not create redistribution rights.
 
-## 5. Reputation computation and performance
+## 5. Reputation consumption and performance
 
-Compute from admitted immutable snapshots: subject/scope matching, lifecycle/version reduction, expiry filtering, lineage grouping, dimension rules, then coverage and explanation construction. `NoKnownThreat` requires complete requested provider coverage and no applicable threat; it never means unconditional safety. Positive evidence that remains valid survives a different provider's outage. Conflicts and excluded evidence remain inspectable.
+Veilpick validates the released Wardnet envelope; it does not recompute destination reputation. `Unknown`, `NoKnownThreat`, adverse, conflicting, degraded, expired, and unavailable states retain the owner's semantics and reason codes. A favorable accessibility or source-content record cannot erase an adverse destination-security decision.
 
-Use subject/type indexes and immutable snapshot reads to avoid scanning the entire corpus per request. Bound matching records before allocation, batch provider ingestion off the query path, and atomically publish a snapshot plus its coverage manifest. Cache keys include subject, tenant/visibility, purpose, requested coverage, rule/profile version and generation; expiration and revocation invalidate results. No query-path dependency on Wardnet availability is permitted. Benchmark serialization separately from core evaluation and include worst-case lineage/conflict workloads. No latency, memory or accuracy result is asserted here.
+Cache keys include tenant, workload, purpose, typed subject, owner release, rule version, snapshot generation, and expiry. Bound allocations before decoding; benchmark authentication, validation, cache lookup, serialization, owner latency, and fail-closed outage paths with all failures included. No latency, memory, or accuracy result is asserted here.
 
-Optional learned URL signals start in shadow mode with independently labeled, domain/time-separated data. Prevent feed-label leakage and syndicated-source duplicates across splits. Compare feed-only, rule-only and combined baselines; report precision/recall, false-positive rate, abstention/coverage, calibration and cost with denominators. Model confidence and provider confidence are separately labeled [4, 6-8]. A model rollout cannot relax evidence or authority invariants.
+Wardnet owns learned malicious-URL signals, feed/rule evaluation, calibration, false-positive analysis, and evidence-lineage reduction. Veilpick may report its own extraction provenance and claim-validation outcomes through a released producer contract, but it cannot turn them into owner decisions or a universal site score.
 
 ## 6. Required acceptance portfolio
 
@@ -119,12 +98,12 @@ Optional learned URL signals start in shadow mode with independently labeled, do
 | Ten syndicated reports / contradictory evidence | Same-lineage reports do not multiply support; contradiction remains visible |
 | Valid TLS with phishing evidence / reputable challenging site | Security is not canceled by TLS; access friction does not lower source reliability |
 | Forged provider / hostile model / cross-tenant request | Admission rejection before effects or visibility change; no secret in diagnostics |
-| Wardnet unavailable / standalone execution | Both engines remain usable with explicit coverage status and independently configured adapters |
+| Wardnet unavailable / standalone execution | Anti-bot remains independently testable, but any protected path requiring destination reputation fails closed; no local reputation fallback or copied owner logic |
 
 Lock manifests before execution: source/browser/model/provider/rule/profile versions, support matrix, reference labels, trial counts and budgets. Report all trials, including unsupported, failed, cancelled and infrastructure-error outcomes; publish success among supported tasks and overall completion separately. A successful module/unit test is not end-to-end autonomous collection. Design checks, runtime tests, hosted checks and release acceptance remain separate evidence classes.
 
 ## 7. Delivery and current gaps
 
-The two [implementation](../superpowers/plans/2026-09-05-anti-bot-engine.md) [plans](../superpowers/plans/2026-09-05-site-reputation-engine.md) define independent slices and their tests. Current delivered scope is this specification and the ADRs only. There are no Cargo manifests, live service endpoints, functioning resolvers, feed integrations, persisted ledgers or benchmark results in this PR. Those remain open implementation requirements, not optional omissions from v1.
+The [anti-bot implementation plan](../superpowers/plans/2026-09-05-anti-bot-engine.md) owns Veilpick runtime slices. The [reputation consumer plan](../superpowers/plans/2026-09-05-site-reputation-engine.md) begins only after Wardnet publishes an immutable compatible contract/release. Current scope is documentation only: no local reputation core, standalone reputation app, provider ingestion, database, model, or runtime integration is claimed.
 
-OriginWeave candidate HTTP/presentation capabilities are observed open work, not shipped dependencies. Integration must use a verified integrated generation and retain exact compatibility evidence. The Veilpick product baseline is integrated on protected `develop@cdaae4519db95141b88080d23d3cbeab6cfca31b`; this Draft design remains Proposed until it independently passes review and normal integration. Wardnet's existing gap-baseline writer and runtime/security PRs are not modified.
+OriginWeave candidate capabilities and Wardnet PR #173 are open work, not shipped dependencies. Integration must use protected, immutable releases and retain exact compatibility evidence. The Veilpick product baseline is integrated on protected `develop@cdaae4519db95141b88080d23d3cbeab6cfca31b`; this Draft remains Proposed until normal review and integration.

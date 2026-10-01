@@ -6,7 +6,8 @@ Inspection date: 2026-09-05. This record distinguishes observed source facts, pr
 
 | Source | Inspected generation | Supported observation |
 | --- | --- | --- |
-| Wardnet README, AGENTS, CLAUDE and core model | `5829a0f08d78de464dd24393ce5d0f25fba9d126` | WAF/IDS/AI SOC/gateway ownership; `ThreatIndicator` and `DnsblEntry` are not complete site-reputation or challenge-resolution contracts |
+| Wardnet protected ownership boundary | merged PR #171 at `d94a4a6207a0d3ea79547a57fb0a7c5f6b2b30d5` | Browser acquisition/challenge handling stays outside Wardnet; destination maliciousness/reputation policy, evidence lifecycle, organizational admission policy, and SOC accountability remain Wardnet-owned |
+| Wardnet reputation owner proposal | Draft PR #173 at `8408c2d50e6419d551bfcccd8d72a97284f36a82` | Proposed owner-side ADR/spec/plan/research only; not a released Veilpick dependency or runtime authority |
 | Veilpick product ADRs | PR #1, refreshed to `24ee7474f02457418b120018f4c6ba6c99de66b9` | Ontology-guided autonomous acquisition, first-class stealth/ecosystem ownership and mandatory functional supported-class challenge resolution; PR was open, not default-branch delivery |
 | OriginWeave README and active HTTP candidate | protected main observed `87c4daa1830bac5a5228b6036752ad5633232085`; PR #37 observed `1e2f41072854edcdbaf0f9ecf14697a3bfd62195` | Runtime authority and bounded HTTP are separate from extraction; open candidate does not establish integration availability |
 | OriginWeave presentation candidate | PR #229, `024f63690cf05cfe6f0d4a430f0e18ea8fd2c4d6`, as recorded in parent Veilpick ADR 0002 | Historical candidate reference only; this record does not independently establish its current head or applied browser behavior |
@@ -15,7 +16,7 @@ Primary repository links: [Wardnet core](https://github.com/ContextualWisdomLab/
 
 The parent advanced legitimately during design preparation and added ADR 0003. Its new README and ADR 0001-0003 are preserved; the new engine records use 0004 and 0005 to avoid competing numbers.
 
-These snapshots are historical inspection anchors, not version pins for future Cargo dependencies. Re-read live refs, code, tests and governance at integration time. Wardnet PR #130 owns its existing product gap-baseline path; this design does not become a second writer for that document.
+These snapshots are historical inspection anchors, not version pins for future dependencies. The merged Wardnet #171 boundary corrects this PR's earlier independent-reputation ownership assumption. Wardnet PR #173 or its verified successor owns implementation/storage/policy design; Veilpick retains only consumer conformance requirements until an immutable compatible release exists. Re-read live refs, code, tests and governance at integration time. Wardnet PR #130 remains its sole product-gap ledger writer.
 
 ## Primary standards and academic references
 
