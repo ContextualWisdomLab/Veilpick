@@ -2,13 +2,13 @@
 
 An accepted ADR records product/design authority; it does not prove implementation, passing tests, merge, or release. These decisions reflect the product owner's direction on 2026-09-05. Repository integration remains subject to normal pull-request review.
 
-| ADR | Decision | Status | Relationship |
-| --- | --- | --- | --- |
-| [0002](0002-ontology-based-autonomous-rust-engine.md) | Ontology-based, fully autonomous website scraping engine built in Rust | Accepted | Governing product contract |
-| [0001](0001-automated-challenge-resolution.md) | Automated challenge resolution is a required capability | Accepted | Required challenge subsystem under ADR 0002 |
-| [0003](0003-stealth-and-ecosystem-composition.md) | First-class stealth and ecosystem composition | Accepted | Refines ADR 0002; preserves ADR 0001 and assigns reuse boundaries |
-| [0004](0004-independent-anti-bot-engine.md) | Independent outbound anti-bot access and challenge engine | Proposed | Preserves ADR 0001-0003; excludes Wardnet ownership |
-| [0005](0005-evidence-based-site-reputation-engine.md) | Independent evidence-based site reputation engine | Proposed | Separate security, reliability, access and coverage assessments |
+| ADR | Decision | Decision status | Integration status | Relationship |
+| --- | --- | --- | --- | --- |
+| [0002](0002-ontology-based-autonomous-rust-engine.md) | Ontology-based, fully autonomous website scraping engine built in Rust | Accepted | Integrated | Governing product contract |
+| [0001](0001-automated-challenge-resolution.md) | Automated challenge resolution is a required capability | Accepted | Integrated | Required challenge subsystem under ADR 0002 |
+| [0003](0003-stealth-and-ecosystem-composition.md) | First-class stealth and ecosystem composition | Accepted | Integrated | Refines ADR 0002; preserves ADR 0001 and assigns reuse boundaries |
+| [0004](0004-independent-anti-bot-engine.md) | Independent outbound anti-bot access and challenge engine | Proposed | Proposed | Preserves ADR 0001-0003; excludes Wardnet ownership |
+| [0005](0005-evidence-based-site-reputation-engine.md) | Independent evidence-based site reputation engine | Proposed | Proposed | Separates security, reliability, access, and coverage assessments |
 
 ADR 0002 followed the initial challenge discussion; numbering is preserved. ADR 0003 makes stealth explicit alongside ontology and autonomy, separates task-local ontology use from shared semantic publication, and corrects feature-branch merge versus protected-main availability.
 
