@@ -8,7 +8,7 @@ This baseline is the continuation map for Veilpick's product contract. It is not
   documentation baseline from PR #1 is integrated there at `cdaae4519db95141b88080d23d3cbeab6cfca31b`.
 - PR #1 is merged; it is no longer an open prerequisite.
 - Draft PR #2 is the Proposed bounded semantic-frontier implementation lane at
-  `c12f7e98cc27ab4a9daf2cce46a40c2f5a537b2f`, based directly on `develop`.
+  `4f62c9d81b5811bfdd26de75640445345f75c32b`, based directly on `develop`.
 - Draft PR #3 is the Proposed access-challenge and site-reputation design lane;
   ADRs 0004 and 0005 remain Proposed and contain no runtime implementation.
 - An open PR, passing predecessor head, or feature-branch integration is not a released capability.
@@ -36,7 +36,7 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 | --- | --- | --- | --- | --- |
 | VP-G01 | Protected product/architecture baseline | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on protected `develop` at `cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1 | Preserve the protected baseline and update it in the same canonical lane as material product decisions | Integrated |
 | VP-G02 | No released executable, package, or immutable version | No package or release is claimed in the README | Reproducible Rust build, SBOM/provenance, signed or otherwise verifiable immutable release, install and rollback path | Open |
-| VP-G03 | Semantic frontier is not integrated | Draft PR #2 exact head `c12f7e98cc27ab4a9daf2cce46a40c2f5a537b2f` contains the first bounded implementation and 25 tests on a history-integrated `develop` base | Obtain all exact-head hosted Rust/test/format/Clippy/rustdoc and repository-governance evidence, then integrate normally | Proposed |
+| VP-G03 | Semantic frontier is not integrated | Draft PR #2 exact head `4f62c9d81b5811bfdd26de75640445345f75c32b` contains the first bounded implementation and 25 tests on a history-integrated `develop` base | Obtain all exact-head hosted Rust/test/format/Clippy/rustdoc and repository-governance evidence, then integrate normally | Proposed |
 | VP-G04 | Acquisition authority and runtime adapter are absent | [ADR 0003](adr/0003-stealth-and-ecosystem-composition.md) defines the boundary only | Versioned admitted-task contract, OriginWeave ACL/capability negotiation, denial/failure fixtures, consumer conformance tests | Open |
 | VP-G05 | Stealth effectiveness is unmeasured | No controlled support matrix or matched baseline is released | Realistic authorized targets; fixed revisions; challenge incidence, cross-surface consistency, completion, failure, intervention, latency, and cost results | Open |
 | VP-G06 | Adaptive extraction and ontology-guided replanning are absent | Product acceptance is documented; no implementation/release evidence exists | Source-bound extraction, task-local semantic model, reconciliation, completeness/abstention tests, provenance-preserving outputs | Open |
