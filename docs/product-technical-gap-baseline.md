@@ -8,7 +8,9 @@ This baseline is the continuation map for Veilpick's product contract. It is not
   documentation baseline from PR #1 is integrated there at `cdaae4519db95141b88080d23d3cbeab6cfca31b`.
 - PR #1 is merged; it is no longer an open prerequisite.
 - Draft PR #2 is the Proposed bounded semantic-frontier implementation lane at
-  `4f62c9d81b5811bfdd26de75640445345f75c32b`, based directly on `develop`.
+  `611d8d44df598b19c66b7adc75599e3899fa72a0`, based directly on `develop`.
+  Its predecessor code head passed the complete Rust lane; the current docs-only
+  evidence repair must still be evaluated on its own exact head.
 - Draft PR #3 is the Proposed access-challenge and site-reputation design lane;
   ADRs 0004 and 0005 remain Proposed and contain no runtime implementation.
 - An open PR, passing predecessor head, or feature-branch integration is not a released capability.
@@ -25,7 +27,6 @@ The current product decision is an ontology-guided, fully autonomous web acquisi
 | Access Challenge Engine | Keep access/challenge state, budgets, supported-strategy admission, and verified post-conditions independent of the planner | Proposed ADR 0004 incubates the core in Veilpick; OriginWeave retains runtime/browser authority and Wardnet does not own outbound resolution. |
 | Site Reputation | Evaluate immutable evidence snapshots across security, source reliability, access, and coverage without a universal score | Proposed ADR 0005 keeps this independently deployable; Wardnet can supply observations but not the decision. |
 | Adaptive Extraction | Interpret pages, produce candidate records, and retain exact source evidence | Task-local inference is not published ontology truth. |
-| Challenge Resolution | Detect, classify, resolve declared supported classes, and verify trusted post-conditions | Model/browser strategies cannot create authentication, consent, or network authority. |
 | Result Validation | Reconcile entities, validate required fields and relations, and report abstention/failure | Publication to catalogs or enterprise systems is an optional adapter operation. |
 
 ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator may provide bounded reasoning; context-graph-contracts may provide released assertion/provenance interoperability. None is mandatory infrastructure until a versioned contract, release, and consumer conformance evidence exist.
@@ -36,7 +37,7 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 | --- | --- | --- | --- | --- |
 | VP-G01 | Protected product/architecture baseline | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on protected `develop` at `cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1 | Preserve the protected baseline and update it in the same canonical lane as material product decisions | Integrated |
 | VP-G02 | No released executable, package, or immutable version | No package or release is claimed in the README | Reproducible Rust build, SBOM/provenance, signed or otherwise verifiable immutable release, install and rollback path | Open |
-| VP-G03 | Semantic frontier is not integrated | Draft PR #2 exact head `4f62c9d81b5811bfdd26de75640445345f75c32b` contains the first bounded implementation and 25 tests on a history-integrated `develop` base | Obtain all exact-head hosted Rust/test/format/Clippy/rustdoc and repository-governance evidence, then integrate normally | Proposed |
+| VP-G03 | Semantic frontier is not integrated | Draft PR #2 current head `611d8d44df598b19c66b7adc75599e3899fa72a0` contains the bounded implementation and 25 tests on a history-integrated `develop` base; predecessor code head `4f62c9d81b5811bfdd26de75640445345f75c32b` passed Rust run `36806174987` | Obtain exact-current-head hosted evidence and independent review, then integrate normally without treating a successful feature head as a release | Proposed |
 | VP-G04 | Acquisition authority and runtime adapter are absent | [ADR 0003](adr/0003-stealth-and-ecosystem-composition.md) defines the boundary only | Versioned admitted-task contract, OriginWeave ACL/capability negotiation, denial/failure fixtures, consumer conformance tests | Open |
 | VP-G05 | Stealth effectiveness is unmeasured | No controlled support matrix or matched baseline is released | Realistic authorized targets; fixed revisions; challenge incidence, cross-surface consistency, completion, failure, intervention, latency, and cost results | Open |
 | VP-G06 | Adaptive extraction and ontology-guided replanning are absent | Product acceptance is documented; no implementation/release evidence exists | Source-bound extraction, task-local semantic model, reconciliation, completeness/abstention tests, provenance-preserving outputs | Open |
