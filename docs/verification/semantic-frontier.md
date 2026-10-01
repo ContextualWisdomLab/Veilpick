@@ -34,8 +34,11 @@ tests, `cargo clippy --locked --all-targets -- -D warnings` passed, and
 only Rust 1.98.1 rustfmt output and evidence corrections; it does not change
 frontier behavior, dependencies, or the pinned toolchain.
 
-The repaired branch must pass the complete command set below on the final local
-tree and again on the exact unchanged hosted head:
+The repaired branch passed the complete command set below locally and on exact
+unchanged hosted head `4f62c9d81b5811bfdd26de75640445345f75c32b`.
+Push run `36806174987`, job `110190883719`, completed successfully with the
+exact-source assertion, Rust 1.98.1 tests, rustfmt, Clippy, rustdoc, and the
+tracked-mutation check:
 
 ```bash
 cargo test --locked --all-targets
@@ -45,9 +48,9 @@ RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps
 cargo run --locked --example frontier
 ```
 
-Keep PR #2 Draft until the exact hosted head has required checks and independent
-approval. A local pass, pending job, source review, or model review is not
-protected-branch approval. The branch integrates protected `develop` through an
+Keep PR #2 Draft until all required governance checks and independent approval
+exist. The exact hosted Rust lane is green, but a passing feature head, source
+review, or model review is not protected-branch approval. The branch integrates protected `develop` through an
 ordinary merge; no history rewrite, force-push, workflow, toolchain, lockfile,
 runtime dependency, protected branch, release, or product behavior change is made.
 

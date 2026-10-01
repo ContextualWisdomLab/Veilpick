@@ -7,8 +7,11 @@ This baseline is the continuation map for Veilpick's product contract. It is not
 - Protected default branch `develop` is the shipped repository authority. The
   documentation baseline from PR #1 is integrated there at `cdaae4519db95141b88080d23d3cbeab6cfca31b`.
 - PR #1 is merged; it is no longer an open prerequisite.
-- Draft PR #2 is the Proposed bounded semantic-frontier implementation lane. Its
-  branch integrates the protected `develop` history without rebasing or force-pushing.
+- Draft PR #2 is the Proposed bounded semantic-frontier implementation lane at
+  `4f62c9d81b5811bfdd26de75640445345f75c32b`. Its branch integrates the
+  protected `develop` history without rebasing or force-pushing. Exact-head push
+  run `36806174987` passed Rust 1.98.1 tests, rustfmt, Clippy, rustdoc, and the
+  tracked-mutation check; independent approval is still absent.
 - An open PR, passing predecessor head, or feature-branch integration is not a released capability.
 
 The current product decision is an ontology-guided, fully autonomous web acquisition engine built in Rust for authorized collection tasks. Ontology, autonomy, and stealth remain independent acceptance dimensions.
@@ -32,7 +35,7 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 | --- | --- | --- | --- | --- |
 | VP-G01 | Protected product/architecture baseline | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on protected `develop` at `cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1 | Preserve the protected baseline and update it in the same canonical lane as material product decisions | Integrated |
 | VP-G02 | No released executable, package, or immutable version | No package or release is claimed in the README | Reproducible Rust build, SBOM/provenance, signed or otherwise verifiable immutable release, install and rollback path | Open |
-| VP-G03 | Semantic frontier is not integrated | Draft PR #2 contains the first bounded implementation and 25 tests; exact head `556b30b9eaac083ccb52cd6c5193411df0fb81e8` passed all tests in run `34084356474` but failed rustfmt before Clippy and rustdoc | Retarget the history-integrated branch to `develop`, obtain all exact-head Rust/test/format/Clippy/rustdoc and repository-governance evidence, then integrate normally | Proposed |
+| VP-G03 | Semantic frontier is not integrated | Draft PR #2 exact head `4f62c9d81b5811bfdd26de75640445345f75c32b` contains the first bounded implementation and 25 tests; exact-head push run `36806174987` passed Rust 1.98.1 tests, rustfmt, Clippy, rustdoc, and the tracked-mutation check | Obtain independent review and all remaining repository-governance evidence, then integrate normally without treating the successful feature head as a release | Proposed |
 | VP-G04 | Acquisition authority and runtime adapter are absent | [ADR 0003](adr/0003-stealth-and-ecosystem-composition.md) defines the boundary only | Versioned admitted-task contract, OriginWeave ACL/capability negotiation, denial/failure fixtures, consumer conformance tests | Open |
 | VP-G05 | Stealth effectiveness is unmeasured | No controlled support matrix or matched baseline is released | Realistic authorized targets; fixed revisions; challenge incidence, cross-surface consistency, completion, failure, intervention, latency, and cost results | Open |
 | VP-G06 | Adaptive extraction and ontology-guided replanning are absent | Product acceptance is documented; no implementation/release evidence exists | Source-bound extraction, task-local semantic model, reconciliation, completeness/abstention tests, provenance-preserving outputs | Open |

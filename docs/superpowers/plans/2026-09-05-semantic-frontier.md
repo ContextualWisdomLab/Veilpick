@@ -27,8 +27,8 @@ Files: `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `src/lib.rs`, `tests/f
 - [ ] Execute `cargo test --locked --all-targets` on the test-only head and confirm unresolved frontier API is the actual RED, not an unrelated toolchain or workflow failure.
 - [x] Add `Candidate`, `FrontierLimits`, `FrontierError`, `FrontierStep`, and `CrawlFrontier` implementation source in `src/frontier.rs`; export them from `src/lib.rs` with rustdoc. Compilation remains unverified.
 - [x] Add 13 boundary/error-display requirements in `tests/frontier_boundaries.rs` and the synthetic `examples/frontier.rs` consumer.
-- [ ] Pass both focused test files on the implementation revision.
-- [ ] Run `cargo fmt --all --check`, `cargo test --locked --all-targets`, `cargo clippy --locked --all-targets -- -D warnings`, and `RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps` successfully on one unchanged head.
+- [x] Pass both focused test files on the implementation revision; exact-head run `36806174987` included all 25 tests.
+- [x] Run `cargo fmt --all --check`, `cargo test --locked --all-targets`, `cargo clippy --locked --all-targets -- -D warnings`, and `RUSTDOCFLAGS='-D warnings' cargo doc --locked --no-deps` successfully on unchanged head `4f62c9d81b5811bfdd26de75640445345f75c32b` in run `36806174987`.
 - [x] Update implementation-source status and CHANGELOG; keep Draft because executed verification is unavailable.
 
 Expected positive behavior:
@@ -67,8 +67,11 @@ rechecked during implementation.
 The follow-up request advances implementation source rather than stopping at
 interface-only scaffolding. The original 12 test requirements are retained and
 the additional 13 tests were written before the production module. However,
-RED/GREEN was not executed: do not call this a verified TDD cycle or passing library.
-See [the verification record](../../verification/semantic-frontier.md).
+RED/GREEN was not executed on the original test-only head, so do not call the
+authoring sequence a verified TDD cycle. The completed implementation is now a
+passing library at exact head `4f62c9d81b5811bfdd26de75640445345f75c32b`;
+hosted push run `36806174987` passed tests, rustfmt, Clippy, rustdoc, and the
+tracked-mutation check. See [the verification record](../../verification/semantic-frontier.md).
 
 No transport, browser-applied stealth, ontology induction, live model integration,
 extraction, challenge solver, release, or merge is claimed by this increment.
