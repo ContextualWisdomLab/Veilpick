@@ -4,10 +4,17 @@
 
 This baseline is the continuation map for Veilpick's product contract. It is not release evidence.
 
-- Protected default branch `develop` is the shipped repository authority. The
-  documentation baseline from PR #1 is integrated there at `cdaae4519db95141b88080d23d3cbeab6cfca31b`.
+- Default branch `develop` is the repository authority. The documentation
+  baseline from PR #1 is integrated there at
+  `cdaae4519db95141b88080d23d3cbeab6cfca31b`. On 2026-10-03 the live branch
+  snapshot reported `protected: false`, the repository rulesets response was
+  empty, and the connected integration received HTTP 403 from the classic
+  protection endpoint. Protection is therefore not established by current
+  evidence.
 - PR #1 is merged; it is no longer an open prerequisite.
 - Draft PR #2 is the Proposed bounded semantic-frontier implementation lane. Its
+  evidence-repair predecessor `342129f53fd3238cf7209120902fef94be7b8e25`
+  changes no Rust source relative to the current documentation repair, and its
   implementation-bearing predecessor `4f62c9d81b5811bfdd26de75640445345f75c32b`
   passed exact-source push run `36806174987` with Rust 1.98.1 tests, rustfmt,
   Clippy, rustdoc, and the tracked-mutation check. Later evidence-only commits do
@@ -33,9 +40,9 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 
 | ID | Gap | Current evidence | Required action and closure evidence | Status |
 | --- | --- | --- | --- | --- |
-| VP-G01 | Protected product/architecture baseline | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on protected `develop` at `cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1 | Preserve the protected baseline and update it in the same canonical lane as material product decisions | Integrated |
+| VP-G01 | Default-branch baseline exists but branch protection is not established | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on `develop@cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1; the 2026-10-03 branch snapshot reports `protected: false`, repository rulesets are empty, and the classic protection endpoint is unreadable by the connected integration (HTTP 403) | Configure protection if absent, then record an authorized branch/ruleset receipt plus required exact-head checks and review gates without bypass | Open |
 | VP-G02 | No released executable, package, or immutable version | No package or release is claimed in the README | Reproducible Rust build, SBOM/provenance, signed or otherwise verifiable immutable release, install and rollback path | Open |
-| VP-G03 | Semantic frontier is not integrated | Draft PR #2 contains the first bounded implementation and 25 tests; implementation-bearing predecessor `4f62c9d81b5811bfdd26de75640445345f75c32b` passed exact-source run `36806174987` with Rust 1.98.1 tests, rustfmt, Clippy, rustdoc, and the tracked-mutation check | Verify the final unchanged PR head, obtain independent review and all remaining repository-governance evidence, then integrate normally without treating a successful feature head as a release | Proposed |
+| VP-G03 | Semantic frontier is not integrated | Draft PR #2 contains the first bounded implementation and 25 tests; implementation-bearing predecessor `4f62c9d81b5811bfdd26de75640445345f75c32b` passed exact-source run `36806174987`, while evidence-repair predecessor `342129f53fd3238cf7209120902fef94be7b8e25` had skipped Rust/CodeQL PR jobs and no qualifying approval | Obtain exact-current-head hosted Rust/compiler/test/format/lint/docs evidence, required governance evidence, and independent approval, then integrate normally without treating a successful feature head as a release | Proposed |
 | VP-G04 | Acquisition authority and runtime adapter are absent | [ADR 0003](adr/0003-stealth-and-ecosystem-composition.md) defines the boundary only | Versioned admitted-task contract, OriginWeave ACL/capability negotiation, denial/failure fixtures, consumer conformance tests | Open |
 | VP-G05 | Stealth effectiveness is unmeasured | No controlled support matrix or matched baseline is released | Realistic authorized targets; fixed revisions; challenge incidence, cross-surface consistency, completion, failure, intervention, latency, and cost results | Open |
 | VP-G06 | Adaptive extraction and ontology-guided replanning are absent | Product acceptance is documented; no implementation/release evidence exists | Source-bound extraction, task-local semantic model, reconciliation, completeness/abstention tests, provenance-preserving outputs | Open |
@@ -46,6 +53,6 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 
 ## Decision and evidence rules
 
-A gap becomes **Integrated** only when its canonical owner change reaches the protected branch and the exact unchanged head has required checks and review evidence. A capability becomes **Released** only when an immutable version and consumer-verifiable evidence exist. Draft, Proposed, blocked, or feature-branch work remains visible and is never counted as completion.
+A gap becomes **Integrated** only when its canonical owner change reaches the default branch through normal governance and the exact unchanged head has required checks and review evidence. A production-protection claim additionally requires an authorized branch or ruleset receipt. A capability becomes **Released** only when an immutable version and consumer-verifiable evidence exist. Draft, Proposed, blocked, or feature-branch work remains visible and is never counted as completion.
 
 Every update to the PRD/TRD, ADRs, architecture, Context Map, API, database model, test contract, release, or material integration must update this register in the same authoritative lane. Contradictions are repaired at their owning source rather than hidden in customer-facing README copy.

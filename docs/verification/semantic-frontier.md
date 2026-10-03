@@ -51,9 +51,10 @@ cargo run --locked --example frontier
 Keep PR #2 Draft until all required governance checks and independent approval
 exist. The implementation-bearing predecessor's exact hosted Rust lane is green,
 but a passing predecessor, source review, or model review is not final-head
-protected-branch approval. The branch integrates protected `develop` through an
-ordinary merge; no history rewrite, force-push, workflow, toolchain, lockfile,
-runtime dependency, protected branch, release, or product behavior change is made.
+default-branch approval. The branch integrates `develop` through an ordinary
+merge; no history rewrite, force-push, workflow, toolchain, lockfile, runtime
+dependency, default branch, release, or product behavior change is made. The
+2026-10-03 live branch snapshot does not establish branch protection.
 
 Stealth, ontology induction, acquisition adapters, extraction, and supported-class
 automated challenge resolution remain required product capabilities. This frontier
