@@ -14,6 +14,10 @@ This repository currently defines the product and architecture contract. It does
 - [ADR 0001: Automated challenge resolution](adr/0001-automated-challenge-resolution.md)
 - [ADR 0002: Ontology-based, fully autonomous Rust scraping engine](adr/0002-ontology-based-autonomous-rust-engine.md)
 - [ADR 0003: First-class stealth and ecosystem composition](adr/0003-stealth-and-ecosystem-composition.md)
+- [ADR 0004: Independent outbound anti-bot access engine](adr/0004-independent-anti-bot-engine.md)
+- [ADR 0005: Consume Wardnet-owned site reputation decisions](adr/0005-evidence-based-site-reputation-engine.md)
+- [Anti-bot and reputation-consumer composition design](design/access-and-reputation-engines.md)
+- [Access and reputation research record](research/access-and-reputation-evidence.md)
 - [Ask DeepWiki](https://deepwiki.com/ContextualWisdomLab/Veilpick)
 
 ## Product boundary
