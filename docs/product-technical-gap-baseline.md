@@ -4,15 +4,25 @@
 
 This baseline is the continuation map for Veilpick's product contract. It is not release evidence.
 
-- Protected default branch `develop` is the shipped repository authority. The
-  documentation baseline from PR #1 is integrated there at `cdaae4519db95141b88080d23d3cbeab6cfca31b`.
+- Default branch `develop` is the repository authority. The documentation
+  baseline from PR #1 is integrated there at
+  `cdaae4519db95141b88080d23d3cbeab6cfca31b`. On 2026-10-03 the live branch
+  snapshot reported `protected: false`, the repository rulesets response was
+  empty, and the connected integration received HTTP 403 from the classic
+  protection endpoint. Protection is therefore not established by current
+  evidence.
 - PR #1 is merged; it is no longer an open prerequisite.
 - Draft PR #2 is the Proposed bounded semantic-frontier implementation lane at
-  `342129f53fd3238cf7209120902fef94be7b8e25`, based directly on `develop`.
-  Its implementation-bearing predecessor passed the complete Rust lane; the
-  final unchanged PR head still requires its own governance evidence.
-- Draft PR #3 is the Proposed access-challenge owner and Wardnet-reputation
-  consumer-boundary lane; ADRs 0004 and 0005 contain no runtime implementation.
+  exact head `9431fcd44a95298810206c6e2bb2c4a3e65ccb6f`. That evidence-only
+  repair changes no Rust source relative to predecessor
+  `342129f53fd3238cf7209120902fef94be7b8e25`; its
+  implementation-bearing predecessor `4f62c9d81b5811bfdd26de75640445345f75c32b`
+  passed exact-source push run `36806174987` with Rust 1.98.1 tests, rustfmt,
+  Clippy, rustdoc, and the tracked-mutation check. Later evidence-only commits do
+  not change that receipt or establish independent approval.
+- Draft PR #3 is stacked on PR #2 exact head by this ordinary merge and remains
+  the Proposed access-challenge owner and Wardnet-reputation consumer-boundary
+  lane; ADRs 0004 and 0005 contain no runtime implementation.
 - An open PR, passing predecessor head, or feature-branch integration is not a released capability.
 
 The current product decision is an ontology-guided, fully autonomous web acquisition engine built in Rust for authorized collection tasks. Ontology, autonomy, and stealth remain independent acceptance dimensions.
@@ -35,9 +45,9 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 
 | ID | Gap | Current evidence | Required action and closure evidence | Status |
 | --- | --- | --- | --- | --- |
-| VP-G01 | Protected product/architecture baseline | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on protected `develop` at `cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1 | Preserve the protected baseline and update it in the same canonical lane as material product decisions | Integrated |
+| VP-G01 | Default-branch baseline exists but branch protection is not established | [README](../README.md), [ADR index](adr/README.md), and this register are integrated on `develop@cdaae4519db95141b88080d23d3cbeab6cfca31b` through merged PR #1; the 2026-10-03 branch snapshot reports `protected: false`, repository rulesets are empty, and the classic protection endpoint is unreadable by the connected integration (HTTP 403) | Configure protection if absent, then record an authorized branch/ruleset receipt plus required exact-head checks and review gates without bypass | Open |
 | VP-G02 | No released executable, package, or immutable version | No package or release is claimed in the README | Reproducible Rust build, SBOM/provenance, signed or otherwise verifiable immutable release, install and rollback path | Open |
-| VP-G03 | Semantic frontier is not integrated | Draft PR #2 current head `611d8d44df598b19c66b7adc75599e3899fa72a0` contains the bounded implementation and 25 tests on a history-integrated `develop` base; predecessor code head `4f62c9d81b5811bfdd26de75640445345f75c32b` passed Rust run `36806174987` | Obtain exact-current-head hosted evidence and independent review, then integrate normally without treating a successful feature head as a release | Proposed |
+| VP-G03 | Semantic frontier is not integrated | Draft PR #2 exact head `9431fcd44a95298810206c6e2bb2c4a3e65ccb6f` contains the first bounded implementation and 25 tests; implementation-bearing predecessor `4f62c9d81b5811bfdd26de75640445345f75c32b` passed exact-source run `36806174987`, while the evidence-only current head requires fresh exact-head receipts and still has no qualifying approval | Obtain exact-current-head hosted Rust/compiler/test/format/lint/docs evidence, required governance evidence, and independent approval, then integrate normally without treating a successful feature head as a release | Proposed |
 | VP-G04 | Acquisition authority and runtime adapter are absent | [ADR 0003](adr/0003-stealth-and-ecosystem-composition.md) defines the boundary only | Versioned admitted-task contract, OriginWeave ACL/capability negotiation, denial/failure fixtures, consumer conformance tests | Open |
 | VP-G05 | Stealth effectiveness is unmeasured | No controlled support matrix or matched baseline is released | Realistic authorized targets; fixed revisions; challenge incidence, cross-surface consistency, completion, failure, intervention, latency, and cost results | Open |
 | VP-G06 | Adaptive extraction and ontology-guided replanning are absent | Product acceptance is documented; no implementation/release evidence exists | Source-bound extraction, task-local semantic model, reconciliation, completeness/abstention tests, provenance-preserving outputs | Open |
@@ -45,11 +55,11 @@ ConceptWeave may provide reviewed semantic contracts; contextual-orchestrator ma
 | VP-G08 | End-to-end product accuracy is unmeasured | No full acquisition experiment is released | Declare sampling design, target error, failure denominator, realistic cases, reproducibility, false continuation and extraction accuracy | Open |
 | VP-G09 | Commercial dependency inventory is not yet applicable to a shipped graph | PR #1 adds no dependency; Draft PR #2 is standard-library-only | Before every dependency enters, verify provenance/license, forbid unapproved GPL/LGPL/AGPL or noncommercial intake, record NOTICE/attribution and SBOM obligations | Active control |
 | VP-G10 | Operability and security evidence are incomplete | Security reporting and fail-closed principles are documented only | Threat model, secrets/credential-handle contract, audit events, resource limits, cancellation/recovery, container/runtime profile, incident and rollback procedures | Open |
-| VP-G11 | Independent access-challenge engine is design-only | Draft PR #3 proposes [ADR 0004](adr/0004-independent-anti-bot-engine.md), a bounded context, contract shapes, acceptance cases, and an implementation plan | Implement test-first Rust state transitions and ports, real supported-class fixtures, durable budget/effect recovery, exact post-condition evidence, security/performance evidence, and an immutable release before consumer integration | Proposed |
+| VP-G11 | Independent access-challenge engine is design-only | Draft PR #3 is stacked on PR #2 exact head `9431fcd44a95298810206c6e2bb2c4a3e65ccb6f` and proposes [ADR 0004](adr/0004-independent-anti-bot-engine.md), a bounded context, contract shapes, acceptance cases, and an implementation plan | Implement test-first Rust state transitions and ports, real supported-class fixtures, durable budget/effect recovery, exact post-condition evidence, security/performance evidence, and an immutable release before consumer integration | Proposed |
 | VP-G12 | Wardnet reputation consumer integration is blocked on an owner release | Merged Wardnet #171 establishes canonical ownership; Draft Wardnet #173 is Proposed only, while Veilpick [ADR 0005](adr/0005-evidence-based-site-reputation-engine.md) now defines the consumer ACL and preserved conformance requirements | Complete owner RED→implementation/docs→CI GREEN→immutable release, then add a versioned Veilpick consumer bump with contract/security/performance/E2E evidence; until then use only a feature-disabled port or bounded test double | Proposed |
 
 ## Decision and evidence rules
 
-A gap becomes **Integrated** only when its canonical owner change reaches the protected branch and the exact unchanged head has required checks and review evidence. A capability becomes **Released** only when an immutable version and consumer-verifiable evidence exist. Draft, Proposed, blocked, or feature-branch work remains visible and is never counted as completion.
+A gap becomes **Integrated** only when its canonical owner change reaches the default branch through normal governance and the exact unchanged head has required checks and review evidence. A production-protection claim additionally requires an authorized branch or ruleset receipt. A capability becomes **Released** only when an immutable version and consumer-verifiable evidence exist. Draft, Proposed, blocked, or feature-branch work remains visible and is never counted as completion.
 
 Every update to the PRD/TRD, ADRs, architecture, Context Map, API, database model, test contract, release, or material integration must update this register in the same authoritative lane. Contradictions are repaired at their owning source rather than hidden in customer-facing README copy.

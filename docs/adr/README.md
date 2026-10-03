@@ -10,7 +10,7 @@ An accepted ADR records product/design authority; it does not prove implementati
 | [0004](0004-independent-anti-bot-engine.md) | Independent outbound anti-bot access and challenge engine | Proposed | Proposed | Preserves ADR 0001-0003; excludes Wardnet ownership |
 | [0005](0005-evidence-based-site-reputation-engine.md) | Consume Wardnet-owned destination reputation decisions | Proposed | Proposed | Removes competing ownership; keeps Veilpick consumer ACL and conformance boundaries |
 
-ADR 0002 followed the initial challenge discussion; numbering is preserved. ADR 0003 makes stealth explicit alongside ontology and autonomy, separates task-local ontology use from shared semantic publication, and corrects feature-branch merge versus protected-main availability.
+ADR 0002 followed the initial challenge discussion; numbering is preserved. ADR 0003 makes stealth explicit alongside ontology and autonomy, separates task-local ontology use from shared semantic publication, and corrects feature-branch merge versus default-branch availability.
 
 Implementation and dependency status remain separate from design acceptance. No ADR is evidence of a universal solver, working browser integration, a verified external dependency, or a complete autonomous Rust engine.
 
