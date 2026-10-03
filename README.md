@@ -86,7 +86,7 @@ A Veilpick release must bind claims to exact-version evidence. At minimum, the s
 - integration contract and compatibility tests for every enabled external service;
 - explicit supported and unsupported challenge classes.
 
-ADR decision status records product-owner acceptance; repository integration remains Proposed until the documentation reaches the protected branch through normal governance. No benchmark, compatibility, deployment, or release claim should be inferred from this README.
+ADR decision status records product-owner acceptance; repository integration remains Proposed until the documentation reaches the default branch through normal governance. The 2026-10-03 live branch snapshot does not establish branch protection, so no protection, benchmark, compatibility, deployment, or release claim should be inferred from this README.
 
 ## Documentation
 

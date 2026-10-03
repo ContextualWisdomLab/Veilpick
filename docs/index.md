@@ -4,7 +4,7 @@ Veilpick is a planned Rust engine for ontology-guided, autonomous web acquisitio
 
 ## Current status
 
-This repository currently defines the product and architecture contract. It does not yet publish an executable engine, browser integration, challenge resolver, package, hosted service, or release. Open pull requests and documentation are candidate evidence until they reach the protected default branch.
+This repository currently defines the product and architecture contract. It does not yet publish an executable engine, browser integration, challenge resolver, package, hosted service, or release. Open pull requests and documentation are candidate evidence until they reach the default branch through normal governance. The 2026-10-03 live branch snapshot does not establish branch protection.
 
 ## Start here
 
